@@ -48,3 +48,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 3. Design an explicit opt-in for global typing-activity sensing without collecting key values or text; implement separately for macOS and Windows.
 4. Validate movement smoothness and allow roaming to be disabled.
 5. Implement window-edge perching only after a platform-specific approach is chosen and tested.
+
+
+## Transparent cutout milestone (2026-10-22)
+
+- Removed the visible card treatment through CSS: no opaque shell, border, rounded corners, panel shadow, toolbar, text bubble, action buttons, or labels.
+- The SVG dog now fills the transparent native window as the only visible element; the SVG's own soft drop shadow remains.
+- Tauri window config was already set to `transparent: true`, `decorations: false`, and a fully transparent RGBA background, so no native config change was required for this visual milestone.
+- This is a visual cutout, not yet an alpha-shaped native hit-test region: the rectangular transparent window can still intercept pointer input in its bounds. True click-through outside the dog requires native hit-testing work and must be designed without breaking petting.
+- Build/runtime verification remains pending.
