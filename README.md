@@ -77,7 +77,7 @@ src-tauri/target/release/bundle/dmg/
 src-tauri/target/release/bundle/macos/
 ```
 
-Open the generated DMG and follow macOS's installation prompts. A locally built app may not be signed or notarized, so macOS may show a security warning. Only run a build you trust.
+Open the generated DMG and drag DesktopPet into Applications if the disk image contains an app bundle. A locally built app may not be signed or notarized, so macOS may show a security warning. Only run a build you trust.
 
 ### Build from source — Windows
 
