@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DesktopPet",
+  "version": "0.1.0",
+  "identifier": "dev.sarkarshivaditya.desktoppet",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "DesktopPet",
+        "width": 320,
+        "height": 360,
+        "minWidth": 260,
+        "minHeight": 280,
+        "center": true,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": false,
+        "backgroundColor": "#00000000"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "dmg"],
+    "category": "Utility",
+    "shortDescription": "A German Shepherd desktop companion",
+    "longDescription": "A small, lightweight desktop dog for Windows and macOS."
+  }
+}
