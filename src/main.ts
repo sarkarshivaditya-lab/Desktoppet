@@ -197,13 +197,41 @@ if ("__TAURI_INTERNALS__" in window) {
           const maxX = monitor.position.x + monitor.size.width - size.width - padding;
           const maxY = monitor.position.y + monitor.size.height - size.height - padding;
           if (maxX >= minX && maxY >= minY) {
+            const startX = position.x;
+            const startY = position.y;
+            const targetX = Math.round(minX + Math.random() * (maxX - minX));
+            const targetY = Math.round(minY + Math.random() * (maxY - minY));
+            const distance = Math.hypot(targetX - startX, targetY - startY);
+            // Keep each roam short enough to feel intentional, not like a screen-wide teleport.
+            const scale = distance > 260 ? 260 / distance : 1;
+            const endX = Math.round(startX + (targetX - startX) * scale);
+            const endY = Math.round(startY + (targetY - startY) * scale);
+            const duration = 1400;
             shell.classList.add("walking");
-            await new Promise((resolve) => window.setTimeout(resolve, 650));
-            await petWindow.setPosition(new PhysicalPosition(
-              Math.round(minX + Math.random() * (maxX - minX)),
-              Math.round(minY + Math.random() * (maxY - minY))
-            ));
-            window.setTimeout(() => shell.classList.remove("walking"), 700);
+            await new Promise<void>((resolve) => {
+              const started = performance.now();
+              const step = async (now: number) => {
+                const raw = Math.min(1, (now - started) / duration);
+                const eased = raw * raw * (3 - 2 * raw);
+                try {
+                  await petWindow.setPosition(new PhysicalPosition(
+                    Math.round(startX + (endX - startX) * eased),
+                    Math.round(startY + (endY - startY) * eased)
+                  ));
+                } catch (error) {
+                  console.warn("Could not animate pet window position.", error);
+                  resolve();
+                  return;
+                }
+                if (raw < 1) {
+                  window.requestAnimationFrame((next) => { void step(next); });
+                } else {
+                  resolve();
+                }
+              };
+              window.requestAnimationFrame((now) => { void step(now); });
+            });
+            window.setTimeout(() => shell.classList.remove("walking"), 250);
           }
         }
       } catch (error) {
