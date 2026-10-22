@@ -130,3 +130,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Source audit found the Tauri capability file did not grant `core:window:allow-start-dragging`. The frontend was calling `startDragging()`, so the native command could be rejected by the capability boundary.
 - Added the narrow `core:window:allow-start-dragging` permission to `src-tauri/capabilities/default.json` on `feat/desktop-pet-interactions`.
 - This is the likely root cause, not yet confirmed by a local macOS run. Pull, rebuild and test drag again; if it still fails, capture the terminal/devtools warning from `Could not start manual pet drag.`.
+
+
+## Global cursor tracking restoration (2026-10-22)
+
+- User reported that the dog's eyes stopped following the cursor when the pet window was not clicked/focused.
+- Root cause: DOM `pointermove` events only report movement delivered to the pet webview, so they cannot track the pointer while it is over another app.
+- Added a small macOS native CoreGraphics command that returns the current pointer coordinates, and a frontend poll that maps those coordinates into the pet window so eye gaze can update while another app is focused. It reads pointer coordinates only; it does not capture keyboard input or typed text.
+- Non-macOS builds currently return no global cursor position and retain in-window pointer tracking.
+- This implementation has not been compiled or runtime-tested on the user's Mac. Check Rust FFI compilation and coordinate alignment after pulling; display scaling/multiple-monitor coordinate mapping may need adjustment based on runtime results.
