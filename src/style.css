@@ -34,6 +34,8 @@ button { font: inherit; }
   outline-offset: 3px;
 }
 .dog-art { width: min(254px, 93%); height: 246px; overflow: visible; filter: drop-shadow(0 8px 5px rgba(40,25,12,.12)); transform-origin: 50% 88%; }
+.eye { transform-box: fill-box; transform-origin: center; transition: transform 90ms ease-out; }
+.dog-art.blink .eye { transform: scaleY(.08) !important; transition: transform 75ms ease-in; }
 .tap-hint { margin-top: -5px; font-size: 8px; letter-spacing: .2em; color: #9d866c; font-weight: 800; }
 .speech {
   width: 100%; min-height: 47px; display: flex; align-items: center; gap: 8px; padding: 7px 12px;
@@ -61,6 +63,9 @@ button { font: inherit; }
 .is-napping .dog-art { filter: drop-shadow(0 5px 4px rgba(40,25,12,.1)); opacity: .83; transform: scale(.96); }
 .is-napping .status-dot { background: #c39a58; }
 .is-hidden { opacity: 0; pointer-events: none; }
+.typing-reaction .dog-art { animation: typing-bounce .72s ease-in-out; }
+.typing-reaction .tail { animation: tail-wag .3s ease-in-out 2; transform-origin: 78px 160px; }
+.walking .dog-art { animation: walk-bob .2s ease-in-out 3 alternate; }
 @keyframes tail-wag {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(13deg); }
@@ -70,6 +75,15 @@ button { font: inherit; }
   22% { transform: rotate(-2deg) translateY(-3px); }
   45% { transform: rotate(2deg) translateY(-1px); }
   70% { transform: rotate(-1deg) translateY(-2px); }
+}
+@keyframes typing-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-7px) rotate(-2deg); }
+  60% { transform: translateY(1px) rotate(2deg); }
+}
+@keyframes walk-bob {
+  from { transform: translateY(0) rotate(-1deg); }
+  to { transform: translateY(-4px) rotate(1deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
