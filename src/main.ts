@@ -1,5 +1,5 @@
 import "./style.css";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { availableMonitors, getCurrentWindow } from "@tauri-apps/api/window";
 import { PhysicalPosition } from "@tauri-apps/api/dpi";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -68,11 +68,18 @@ app.innerHTML = `
   </main>
 `;
 
-const phrase = document.querySelector<HTMLParagraphElement>("#phrase");
-const dog = document.querySelector<HTMLButtonElement>("#dog");
-const shell = document.querySelector<HTMLElement>(".pet-shell");
-const art = document.querySelector<SVGSVGElement>(".dog-art");
-if (!phrase || !dog || !shell || !art) throw new Error("Pet UI failed to initialize");
+const phraseElement = document.querySelector<HTMLParagraphElement>("#phrase");
+const dogElement = document.querySelector<HTMLButtonElement>("#dog");
+const shellElement = document.querySelector<HTMLElement>(".pet-shell");
+const artElement = document.querySelector<SVGSVGElement>(".dog-art");
+if (!phraseElement || !dogElement || !shellElement || !artElement) {
+  throw new Error("Pet UI failed to initialize");
+}
+// Keep non-null DOM references outside closures for strict TypeScript checks.
+const phrase: HTMLParagraphElement = phraseElement;
+const dog: HTMLButtonElement = dogElement;
+const shell: HTMLElement = shellElement;
+const art: SVGSVGElement = artElement;
 const eyes = Array.from(document.querySelectorAll<SVGGElement>(".eye"));
 let lastUserInteraction = Date.now();
 let lastTypingReaction = 0;
@@ -174,8 +181,15 @@ if ("__TAURI_INTERNALS__" in window) {
   const roam = async () => {
     if (Date.now() - lastUserInteraction > 12000 && !shell.classList.contains("is-napping")) {
       try {
-        const monitor = await petWindow.currentMonitor();
+        const monitors = await availableMonitors();
+        const position = await petWindow.outerPosition();
         const size = await petWindow.outerSize();
+        const monitor = monitors.find((item) =>
+          position.x >= item.position.x &&
+          position.y >= item.position.y &&
+          position.x < item.position.x + item.size.width &&
+          position.y < item.position.y + item.size.height
+        );
         if (monitor) {
           const padding = 18;
           const minX = monitor.position.x + padding;
