@@ -141,6 +141,11 @@ if ("__TAURI_INTERNALS__" in window) {
   document.querySelector(".footnote")?.setAttribute("data-tauri-drag-region", "");
 }
 
+// Manual pointer interaction should postpone autonomous roaming.
+document.addEventListener("pointerdown", () => {
+  lastUserInteraction = Date.now();
+});
+
 document.addEventListener("pointermove", (event) => {
   const rect = art.getBoundingClientRect();
   const x = Math.max(-2.5, Math.min(2.5, ((event.clientX - rect.left) / rect.width - 0.5) * 5));
