@@ -34,8 +34,8 @@ button { font: inherit; }
 }
 .dog-art { display: block; width: min(100%, 320px); height: auto; max-height: 100%; overflow: visible; filter: drop-shadow(0 4px 3px rgba(0,0,0,.12)); transform-origin: 50% 88%; }
 .eye { transform-box: fill-box; transform-origin: center; transition: transform 70ms ease-out; }
-.tail-group { transform-box: view-box; transform-origin: 91px 154px; transition: transform 100ms ease-out; }
-.leg { transform-box: view-box; transform-origin: center; }
+.tail-group { transform-box: fill-box; transform-origin: 88% 80%; }
+.leg { transform-box: fill-box; transform-origin: 50% 8%; }
 .dog-art.blink .eye { transform: scaleY(.08) !important; transition: transform 75ms ease-in; }
 .tap-hint { margin-top: -5px; font-size: 8px; letter-spacing: .2em; color: #9d866c; font-weight: 800; }
 .speech {
@@ -71,8 +71,10 @@ button { font: inherit; }
 .walking .leg-front-right, .walking .leg-back-left { animation: leg-step .34s ease-in-out infinite alternate-reverse; }
 .walking .tail-group { animation: tail-walk .38s ease-in-out infinite alternate; }
 @keyframes tail-wag {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(13deg); }
+  0%, 100% { transform: rotate(-4deg); }
+  25% { transform: rotate(17deg); }
+  50% { transform: rotate(-8deg); }
+  75% { transform: rotate(19deg); }
 }
 @keyframes wag {
   0%, 100% { transform: rotate(0deg) translateY(0); }
@@ -86,8 +88,16 @@ button { font: inherit; }
   60% { transform: translateY(1px) rotate(2deg); }
 }
 @keyframes walk-bob {
-  from { transform: translateY(0) rotate(-1deg); }
-  to { transform: translateY(-4px) rotate(1deg); }
+  from { transform: translateY(0) rotate(-.5deg); }
+  to { transform: translateY(-2px) rotate(.5deg); }
+}
+@keyframes leg-step {
+  from { transform: rotate(-13deg) translateY(1px); }
+  to { transform: rotate(13deg) translateY(-1px); }
+}
+@keyframes tail-walk {
+  from { transform: rotate(-12deg); }
+  to { transform: rotate(16deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
