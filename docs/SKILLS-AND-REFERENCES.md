@@ -23,6 +23,7 @@ Window transparency, hit-testing/click-through, dragging, focus, multi-monitor p
 ## Reference implementation
 
 - [`Cloudstill/iPet`](https://github.com/Cloudstill/iPet) is an MIT-licensed Tauri desktop pet with a transparent window. Learn from its patterns or review focused implementation details, but do not replace this repo wholesale. Inspect each file, dependency, asset and licence before copying code.
+- [`Asuraaaaaaaa/border-collie-pet`](https://github.com/Asuraaaaaaaa/border-collie-pet) demonstrates sprite states and a behavior state machine for a Tauri 2 pet. Its visible character art is a border collie and is **not** to be reused for this German Shepherd project; inspect its project licence before copying any implementation code.
 - Official Tauri documentation is the source of truth for APIs. Prefer native window APIs before adding dependencies.
 
 ## Asset and licensing policy
