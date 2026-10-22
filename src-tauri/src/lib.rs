@@ -1,12 +1,6 @@
-#[derive(serde::Serialize)]
-struct CursorPosition {
-    x: f64,
-    y: f64,
-}
-
 #[cfg(target_os = "macos")]
 #[link(name = "ApplicationServices", kind = "framework")]
-unsafe extern "C" {
+extern "C" {
     fn CGEventCreate(source: *const std::ffi::c_void) -> *mut std::ffi::c_void;
     fn CGEventGetLocation(event: *mut std::ffi::c_void) -> CGPoint;
 }
@@ -25,7 +19,7 @@ struct CGPoint {
 }
 
 #[tauri::command]
-fn cursor_position() -> Option<CursorPosition> {
+fn cursor_position() -> Option<(f64, f64)> {
     #[cfg(target_os = "macos")]
     unsafe {
         let event = CGEventCreate(std::ptr::null());
@@ -34,7 +28,7 @@ fn cursor_position() -> Option<CursorPosition> {
         }
         let point = CGEventGetLocation(event);
         CFRelease(event);
-        return Some(CursorPosition { x: point.x, y: point.y });
+        return Some((point.x, point.y));
     }
     #[cfg(not(target_os = "macos"))]
     {
