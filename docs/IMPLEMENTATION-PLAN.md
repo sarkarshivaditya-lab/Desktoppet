@@ -9,14 +9,14 @@ Ship a lightweight German Shepherd companion as a native desktop app for Windows
 - Minimal dependencies and Tauri capabilities.
 
 ## Delivery order
-1. Keep Ponytail mandatory and keep research/licensing rules visible to agents.
-2. Make the interactive pet work with a small, testable state model: idle, happy/wag, nap, hidden.
+1. Read Ponytail before coding; read the Tauri cross-platform skill before native window, plugin, input or packaging changes.
+2. Keep the pet states small: idle, happy/wag, nap and hidden.
 3. Ensure window dragging and native hide/show semantics work on real desktop builds.
-4. Validate the current build and CI on both OS runners; keep CI installs reproducible.
-5. Add a small set of genuinely useful behaviors only after baseline packaging is reliable.
+4. Validate the current build and CI on both OS runners.
+5. Add additional behaviors only after baseline packaging is reliable.
 
 ## Acceptance checklist
-- [ ] `npm ci` succeeds on a clean checkout.
+- [ ] A clean checkout installs dependencies successfully.
 - [ ] `npm run build` succeeds.
 - [ ] Tauri builds a Windows installer on a Windows runner.
 - [ ] Tauri builds a macOS bundle on a macOS runner.
@@ -25,5 +25,5 @@ Ship a lightweight German Shepherd companion as a native desktop app for Windows
 - [ ] Inspect permissions and third-party notices before adding plugins or assets.
 
 ## Current limitations
-- The code-hosting editor can update repository text, but not run the app on this machine. Use CI and physical OS verification for build/runtime claims.
-- Sprite assets are not imported from third-party pet repos. The current dog artwork is original SVG and avoids unclear art provenance.
+- GitHub file editing can update and commit source, but does not run the app on this machine. Use CI and native OS verification for build/runtime claims.
+- The current dog artwork is original inline SVG. Sprite assets were not imported from third-party pet repositories because their licence/provenance did not justify importing them.
