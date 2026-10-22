@@ -108,3 +108,10 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - User ran `npm run build`: TypeScript and Vite completed, but CSS minification reported literal `\\n` characters inside the `@keyframes tail-idle` declaration.
 - Fixed the CSS source by replacing those escaped newline sequences with actual line breaks. The prior build did finish, but this warning meant the idle keyframes were not being parsed correctly.
 - Awaiting user's next `npm run build` output to verify the warning is gone.
+
+
+## Quality-of-life pass 1 — resizable pet window (2026-10-22)
+
+- Enabled native window resizing in `src-tauri/tauri.conf.json`; retained the existing minimum size of 260×280 so the dog cannot be reduced indefinitely.
+- Updated `.dog-art` to scale within the available window dimensions while preserving the SVG viewBox aspect ratio, so resizing should visibly change the pet size instead of leaving the artwork capped at 320px wide.
+- Changes are on `feat/desktop-pet-interactions`. Build/runtime behavior has not been independently verified; test by pulling the branch, rebuilding, then dragging a window edge/corner.
