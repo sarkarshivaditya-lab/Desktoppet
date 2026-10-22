@@ -48,7 +48,7 @@
     "shortDescription": "A German Shepherd desktop companion",
     "longDescription": "A small, lightweight desktop dog for Windows and macOS.",
     "icon": [
-      "icons/icon.svg"
+      "icons/icon.png"
     ]
   }
 }
