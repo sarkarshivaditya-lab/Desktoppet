@@ -122,3 +122,11 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Added native Tauri window dragging when the user presses the primary mouse button on the dog, so the pet can be repositioned manually instead of relying only on autonomous roaming.
 - Manual pointer-down refreshes the interaction timestamp, postponing autonomous roaming. A normal click should still trigger the existing petting response; verify on macOS because native drag/click event interaction can vary.
 - Uses Tauri's native window-drag API rather than custom JavaScript position tracking. Build/runtime verification remains pending.
+
+
+## Manual drag permission fix (2026-10-22)
+
+- User reported that click-and-drag did not move the pet after the frontend handler was added.
+- Source audit found the Tauri capability file did not grant `core:window:allow-start-dragging`. The frontend was calling `startDragging()`, so the native command could be rejected by the capability boundary.
+- Added the narrow `core:window:allow-start-dragging` permission to `src-tauri/capabilities/default.json` on `feat/desktop-pet-interactions`.
+- This is the likely root cause, not yet confirmed by a local macOS run. Pull, rebuild and test drag again; if it still fails, capture the terminal/devtools warning from `Could not start manual pet drag.`.
