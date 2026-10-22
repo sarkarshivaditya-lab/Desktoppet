@@ -4,7 +4,7 @@
 **Baseline commit:** `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`  
 **Interaction branch:** `feat/desktop-pet-interactions`  
 **Repository:** https://github.com/sarkarshivaditya-lab/Desktoppet  
-**Status:** First interaction milestone implemented in source; native build/runtime verification pending.
+**Status:** First interaction milestone committed to `feat/desktop-pet-interactions`; native build/runtime verification pending.\n**Latest implementation commit before this checkpoint update:** `2a5966302c8890c8f44abfe77cc72e8325d41181`
 
 ## Product goal
 
@@ -24,7 +24,7 @@ Build a lightweight desktop-resident German Shepherd companion rather than a con
 - Periodic idle blinks animate the eye groups.
 - Key activity delivered to the pet window triggers a brief bounce/tail animation. The app does not record or retain typed text.
 - In Tauri runtime, the pet periodically chooses a random safe position within the current monitor and moves there after a short walking animation.
-- Manual interaction pauses roaming for 12 seconds; napping pauses roaming.
+- Manual pointer interaction postpones roaming for 12 seconds; napping pauses roaming.
 - Added narrow Tauri permissions for reading the current monitor/outer window size and setting the window position.
 - Existing petting, hello, nap, and hide controls are retained.
 
