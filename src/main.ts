@@ -1,5 +1,6 @@
 import "./style.css";
 import { availableMonitors, getCurrentWindow } from "@tauri-apps/api/window";
+import { invoke } from "@tauri-apps/api/core";
 import { PhysicalPosition } from "@tauri-apps/api/dpi";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -180,14 +181,38 @@ document.addEventListener("pointerdown", () => {
   lastUserInteraction = Date.now();
 });
 
-document.addEventListener("pointermove", (event) => {
+function updateEyeGaze(clientX: number, clientY: number) {
   const rect = art.getBoundingClientRect();
-  const x = Math.max(-5, Math.min(5, ((event.clientX - rect.left) / rect.width - 0.5) * 10));
-  const y = Math.max(-4, Math.min(4, ((event.clientY - rect.top) / rect.height - 0.37) * 8));
+  const x = Math.max(-5, Math.min(5, ((clientX - rect.left) / rect.width - 0.5) * 10));
+  const y = Math.max(-4, Math.min(4, ((clientY - rect.top) / rect.height - 0.37) * 8));
   eyes.forEach((eye) => {
     eye.style.transform = `translate(${x}px, ${y}px)`;
   });
+}
+
+document.addEventListener("pointermove", (event) => {
+  updateEyeGaze(event.clientX, event.clientY);
 });
+
+// Browser pointer events stop at the webview boundary. On macOS, sample the
+// native screen cursor so the dog's gaze continues to follow while another
+// app is focused. Only the pointer coordinates are read; no keyboard input.
+if ("__TAURI_INTERNALS__" in window && navigator.userAgent.includes("Mac")) {
+  const petWindow = getCurrentWindow();
+  const trackScreenCursor = async () => {
+    try {
+      const point = await invoke<[number, number] | null>("cursor_position");
+      if (!point) return;
+      const position = await petWindow.outerPosition();
+      const scale = await petWindow.scaleFactor();
+      updateEyeGaze(point[0] - position.x / scale, point[1] - position.y / scale);
+    } catch (error) {
+      console.warn("Global cursor tracking unavailable.", error);
+    }
+  };
+  const cursorTimer = window.setInterval(() => { void trackScreenCursor(); }, 70);
+  window.addEventListener("beforeunload", () => window.clearInterval(cursorTimer));
+}
 
 // React to key activity delivered to this app window; never read or retain typed text.
 window.addEventListener("keydown", (event) => {
