@@ -1,4 +1,6 @@
 import "./style.css";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { PhysicalPosition } from "@tauri-apps/api/dpi";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) throw new Error("Missing app root");
@@ -44,8 +46,8 @@ app.innerHTML = `
         <path d="M110 91 C117 82 128 82 137 91 L137 113 C133 127 125 133 116 127 C109 120 106 102 110 91Z" fill="#342b25"/>
         <path d="M151 91 C160 82 171 84 176 93 C179 105 176 121 168 127 C159 133 151 126 150 113Z" fill="#342b25"/>
         <path d="M117 121 C130 112 158 112 170 121 C166 140 155 149 143 149 C130 149 120 139 117 121Z" fill="url(#cream)"/>
-        <ellipse cx="125" cy="101" rx="7" ry="8" fill="#111"/><ellipse cx="161" cy="101" rx="7" ry="8" fill="#111"/>
-        <circle cx="127" cy="98" r="2" fill="#fff"/><circle cx="163" cy="98" r="2" fill="#fff"/>
+        <g class="eye eye-left"><ellipse cx="125" cy="101" rx="7" ry="8" fill="#111"/><circle cx="127" cy="98" r="2" fill="#fff"/></g>
+        <g class="eye eye-right"><ellipse cx="161" cy="101" rx="7" ry="8" fill="#111"/><circle cx="163" cy="98" r="2" fill="#fff"/></g>
         <path d="M132 122 Q143 115 154 122 Q151 132 143 132 Q135 131 132 122Z" fill="#191715"/>
         <path d="M143 131 L143 139 Q140 142 137 139" fill="none" stroke="#704b38" stroke-width="2" stroke-linecap="round"/>
         <path d="M99 97 C88 94 83 104 91 111 C95 115 101 114 105 108Z" fill="url(#cream)"/><path d="M181 98 C192 94 198 104 190 112 C186 116 180 114 176 108Z" fill="url(#cream)"/>
@@ -66,13 +68,15 @@ app.innerHTML = `
   </main>
 `;
 
-const phraseElement = document.querySelector<HTMLParagraphElement>("#phrase");
-const dogElement = document.querySelector<HTMLButtonElement>("#dog");
-const shellElement = document.querySelector<HTMLElement>(".pet-shell");
-if (!phraseElement || !dogElement || !shellElement) throw new Error("Pet UI failed to initialize");
-const phrase: HTMLParagraphElement = phraseElement;
-const dog: HTMLButtonElement = dogElement;
-const shell: HTMLElement = shellElement;
+const phrase = document.querySelector<HTMLParagraphElement>("#phrase");
+const dog = document.querySelector<HTMLButtonElement>("#dog");
+const shell = document.querySelector<HTMLElement>(".pet-shell");
+const art = document.querySelector<SVGSVGElement>(".dog-art");
+if (!phrase || !dog || !shell || !art) throw new Error("Pet UI failed to initialize");
+const eyes = Array.from(document.querySelectorAll<SVGGElement>(".eye"));
+let lastUserInteraction = Date.now();
+let lastTypingReaction = 0;
+let roamTimer: number | undefined;
 
 function speak(text: string) {
   phrase.textContent = text;
@@ -86,34 +90,111 @@ function wagTail() {
   dog.classList.add("wag");
 }
 
+function blink() {
+  if (shell.classList.contains("is-napping")) return;
+  art.classList.remove("blink");
+  void art.getBoundingClientRect();
+  art.classList.add("blink");
+  window.setTimeout(() => art.classList.remove("blink"), 180);
+}
+
+function reactToTyping() {
+  const now = Date.now();
+  if (now - lastTypingReaction < 1800 || shell.classList.contains("is-napping")) return;
+  lastTypingReaction = now;
+  shell.classList.remove("typing-reaction");
+  void shell.offsetWidth;
+  shell.classList.add("typing-reaction");
+  window.setTimeout(() => shell.classList.remove("typing-reaction"), 850);
+}
+
 dog.addEventListener("click", () => {
-  speak(phrases[phraseIndex % phrases.length]);
+  const text = phrases[phraseIndex % phrases.length];
   phraseIndex += 1;
+  speak(text);
+  lastUserInteraction = Date.now();
   wagTail();
 });
 
 document.querySelector<HTMLButtonElement>("#hello")?.addEventListener("click", () => {
   speak("Hello, friend. You’re doing fine.");
+  lastUserInteraction = Date.now();
   wagTail();
 });
 
 document.querySelector<HTMLButtonElement>("#nap")?.addEventListener("click", () => {
   const napping = shell.classList.toggle("is-napping");
   phrase.textContent = napping ? "I’ll rest my paws for a bit." : "Back on duty.";
+  lastUserInteraction = Date.now();
 });
 
 document.querySelector<HTMLButtonElement>("#hide")?.addEventListener("click", async () => {
   if ("__TAURI_INTERNALS__" in window) {
-    const { getCurrentWindow } = await import("@tauri-apps/api/window");
     await getCurrentWindow().hide();
     return;
   }
-  // Browser preview has no native window; keep the preview recoverable.
   shell.classList.toggle("is-hidden");
 });
 
 if ("__TAURI_INTERNALS__" in window) {
-  // Enable OS-native dragging on the pet surface without preventing button clicks.
   document.querySelector(".pet-toolbar")?.setAttribute("data-tauri-drag-region", "");
   document.querySelector(".footnote")?.setAttribute("data-tauri-drag-region", "");
+}
+
+document.addEventListener("pointermove", (event) => {
+  const rect = art.getBoundingClientRect();
+  const x = Math.max(-2.5, Math.min(2.5, ((event.clientX - rect.left) / rect.width - 0.5) * 5));
+  const y = Math.max(-2, Math.min(2, ((event.clientY - rect.top) / rect.height - 0.37) * 4));
+  eyes.forEach((eye) => {
+    eye.style.transform = `translate(${x}px, ${y}px)`;
+  });
+});
+
+// React to key activity delivered to this app window; never read or retain typed text.
+window.addEventListener("keydown", (event) => {
+  if (event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
+  reactToTyping();
+});
+
+function scheduleBlink() {
+  window.setTimeout(() => {
+    blink();
+    scheduleBlink();
+  }, 2400 + Math.random() * 3200);
+}
+scheduleBlink();
+
+if ("__TAURI_INTERNALS__" in window) {
+  const petWindow = getCurrentWindow();
+  const roam = async () => {
+    if (Date.now() - lastUserInteraction > 12000 && !shell.classList.contains("is-napping")) {
+      try {
+        const monitor = await petWindow.currentMonitor();
+        const size = await petWindow.outerSize();
+        if (monitor) {
+          const padding = 18;
+          const minX = monitor.position.x + padding;
+          const minY = monitor.position.y + padding;
+          const maxX = monitor.position.x + monitor.size.width - size.width - padding;
+          const maxY = monitor.position.y + monitor.size.height - size.height - padding;
+          if (maxX >= minX && maxY >= minY) {
+            shell.classList.add("walking");
+            await new Promise((resolve) => window.setTimeout(resolve, 650));
+            await petWindow.setPosition(new PhysicalPosition(
+              Math.round(minX + Math.random() * (maxX - minX)),
+              Math.round(minY + Math.random() * (maxY - minY))
+            ));
+            window.setTimeout(() => shell.classList.remove("walking"), 700);
+          }
+        }
+      } catch (error) {
+        console.warn("Desktop roaming unavailable; pet remains stationary.", error);
+      }
+    }
+    roamTimer = window.setTimeout(roam, 22000 + Math.random() * 18000);
+  };
+  roamTimer = window.setTimeout(roam, 18000);
+  window.addEventListener("beforeunload", () => {
+    if (roamTimer !== undefined) window.clearTimeout(roamTimer);
+  });
 }
