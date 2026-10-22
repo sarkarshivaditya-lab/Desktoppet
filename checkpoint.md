@@ -115,3 +115,10 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Enabled native window resizing in `src-tauri/tauri.conf.json`; retained the existing minimum size of 260×280 so the dog cannot be reduced indefinitely.
 - Updated `.dog-art` to scale within the available window dimensions while preserving the SVG viewBox aspect ratio, so resizing should visibly change the pet size instead of leaving the artwork capped at 320px wide.
 - Changes are on `feat/desktop-pet-interactions`. Build/runtime behavior has not been independently verified; test by pulling the branch, rebuilding, then dragging a window edge/corner.
+
+
+## Quality-of-life pass 2 — manual dragging (2026-10-22)
+
+- Added native Tauri window dragging when the user presses the primary mouse button on the dog, so the pet can be repositioned manually instead of relying only on autonomous roaming.
+- Manual pointer-down refreshes the interaction timestamp, postponing autonomous roaming. A normal click should still trigger the existing petting response; verify on macOS because native drag/click event interaction can vary.
+- Uses Tauri's native window-drag API rather than custom JavaScript position tracking. Build/runtime verification remains pending.
