@@ -25,26 +25,17 @@
         "alwaysOnTop": true,
         "skipTaskbar": true,
         "shadow": false,
-        "backgroundColor": [
-          0,
-          0,
-          0,
-          0
-        ],
+        "backgroundColor": [0, 0, 0, 0],
         "focusable": true
       }
     ],
     "security": {
       "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"
-    },
-    "macOSPrivateApi": false
+    }
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "nsis",
-      "dmg"
-    ],
+    "targets": ["nsis", "dmg"],
     "category": "Utility",
     "shortDescription": "A German Shepherd desktop companion",
     "longDescription": "A small, lightweight desktop dog for Windows and macOS."
