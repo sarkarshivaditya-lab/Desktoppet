@@ -127,6 +127,19 @@ function reactToTyping() {
   }, 850);
 }
 
+// Let the user reposition the pet by click-dragging directly on the dog.
+// Starting the native drag on pointer-down keeps movement smooth and avoids
+// implementing window movement in the webview. A normal click still pets him.
+if ("__TAURI_INTERNALS__" in window) {
+  dog.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    lastUserInteraction = Date.now();
+    void getCurrentWindow().startDragging().catch((error) => {
+      console.warn("Could not start manual pet drag.", error);
+    });
+  });
+}
+
 dog.addEventListener("click", () => {
   const text = phrases[phraseIndex % phrases.length];
   phraseIndex += 1;
