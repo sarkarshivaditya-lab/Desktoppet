@@ -84,3 +84,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Increased eye gaze translation range from approximately ±2.5 px horizontally / ±2 px vertically to ±5 px / ±4 px. This still responds only to pointer movement delivered to the pet window; system-wide cursor tracking remains separate native work.
 - Added semantic classes to the four leg shapes and CSS gait animation with alternating leg movement plus body bob while the native window is roaming.
 - CSS/source changes are committed to the feature branch but have not been built or runtime-tested by the editing agent. Verify that SVG transform origins and leg pivots look natural on the actual macOS runtime; CSS rotations on SVG paths can vary in appearance.
+
+
+## Fine-tuning pass 2 — fix non-moving tail/legs (2026-10-22)
+
+- User reported the tail and limbs still did not visibly animate; only the entire cutout swayed during roaming.
+- Root cause found in the CSS: selectors referenced `@keyframes leg-step` and `@keyframes tail-walk`, but those keyframes were absent, so those animations could not run. Also, the tail group used an unreliable view-box coordinate pivot.
+- Added the missing leg-step and tail-walk keyframes, made leg rotation pivots relative to each leg's own SVG bounds, and set the tail pivot relative to the tail group's fill bounds. Increased wag articulation to make it visible.
+- Reduced whole-body walk bob to a subtle ±2px / ±0.5deg so it no longer dominates the gait.
+- This fixes a confirmed source-level omission, but still requires `npm run build` and runtime confirmation. Do not mark animation verified until user tests it.
