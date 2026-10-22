@@ -21,7 +21,7 @@
         "center": false,
         "x": 100,
         "y": 100,
-        "resizable": false,
+        "resizable": true,
         "decorations": false,
         "transparent": true,
         "alwaysOnTop": true,
@@ -42,11 +42,16 @@
     }
   },
   "bundle": {
-  "active": true,
-  "targets": ["nsis", "dmg"],
-  "icon": ["icons/icon-test.png"],
-  "category": "Utility",
-  "shortDescription": "A German Shepherd desktop companion",
-  "longDescription": "A small, lightweight desktop dog for Windows and macOS."
-}
+    "active": true,
+    "targets": [
+      "nsis",
+      "dmg"
+    ],
+    "icon": [
+      "icons/icon-test.png"
+    ],
+    "category": "Utility",
+    "shortDescription": "A German Shepherd desktop companion",
+    "longDescription": "A small, lightweight desktop dog for Windows and macOS."
+  }
 }
