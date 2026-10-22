@@ -75,3 +75,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 
 - Corrected the SVG sizing in `src/style.css`: the dog now uses a bounded width and automatic height, preserving the 280×270 viewBox ratio instead of stretching to fill the 320×360 window. This is a source change only; it has not been runtime-verified by the editing agent.
 - User's statement that the basics are complete is the current product-status signal; it does not constitute a build log. Keep verification claims explicit.
+
+
+## Fine-tuning pass 1 — tail, gaze, gait (2026-10-22)
+
+- Wrapped the tail shape in a dedicated SVG group so the animation pivots near the tail's attachment point rather than around the path's center.
+- Increased tail wag angle and repetitions on petting/hello and typing reactions; added a smaller continuous tail swing while walking.
+- Increased eye gaze translation range from approximately ±2.5 px horizontally / ±2 px vertically to ±5 px / ±4 px. This still responds only to pointer movement delivered to the pet window; system-wide cursor tracking remains separate native work.
+- Added semantic classes to the four leg shapes and CSS gait animation with alternating leg movement plus body bob while the native window is roaming.
+- CSS/source changes are committed to the feature branch but have not been built or runtime-tested by the editing agent. Verify that SVG transform origins and leg pivots look natural on the actual macOS runtime; CSS rotations on SVG paths can vary in appearance.
