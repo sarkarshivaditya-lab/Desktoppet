@@ -155,3 +155,6 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Linked the repository Releases page for installers while making clear that source builds are the fallback if no release assets are published.
 - Commits on `feat/desktop-pet-interactions`: cutout preview asset `0356b0b8ac6c4bdab4caedf60cf68a18bd408f51`; checkpointed asset `431a27d5455aa13be43815360d47d70d80cde70a`; README `a7d7dc17ebd646fb2ddd76ee35a2e55b645e7572`.
 - Documentation changes are committed remotely. The app itself has not been built or runtime-tested as part of this documentation pass; macOS and Windows packaging/runtime validation remains open.
+
+
+- README follow-up: clarified that macOS users should drag the app bundle from the generated DMG into Applications when the disk image contains one. This is a documentation-only correction; app verification is still pending.
