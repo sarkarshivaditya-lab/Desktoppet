@@ -99,7 +99,7 @@ document.querySelector("#nap")?.addEventListener("click", () => {
   phrase.textContent = shell.classList.contains("is-napping") ? "I’ll rest my paws for a bit." : "Back on duty.";
 });
 document.querySelector("#hide")?.addEventListener("click", async () => {
-  if (window.__TAURI_INTERNALS__) {
+  if ("__TAURI_INTERNALS__" in window) {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
     await getCurrentWindow().hide();
   } else {
