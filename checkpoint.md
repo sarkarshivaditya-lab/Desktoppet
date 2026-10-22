@@ -93,3 +93,11 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Added the missing leg-step and tail-walk keyframes, made leg rotation pivots relative to each leg's own SVG bounds, and set the tail pivot relative to the tail group's fill bounds. Increased wag articulation to make it visible.
 - Reduced whole-body walk bob to a subtle ±2px / ±0.5deg so it no longer dominates the gait.
 - This fixes a confirmed source-level omission, but still requires `npm run build` and runtime confirmation. Do not mark animation verified until user tests it.
+
+
+## Fine-tuning pass 3 — idle tail wag (2026-10-22)
+
+- Added a subtle looping tail wag while the pet is idle, without requiring a click or roaming.
+- Idle wag is paused during the walk, nap, and short typing/petting reaction so the animations do not compete. Idle mode resumes after those reactions.
+- Current keydown listener still only receives keys when the pet window itself receives keyboard events. Reacting to typing in other apps needs a native, explicit opt-in activity signal; this pass does not claim system-wide typing detection.
+- Build and runtime verification remain pending.
