@@ -33,7 +33,9 @@ button { font: inherit; }
   outline-offset: 3px;
 }
 .dog-art { display: block; width: min(100%, 320px); height: auto; max-height: 100%; overflow: visible; filter: drop-shadow(0 4px 3px rgba(0,0,0,.12)); transform-origin: 50% 88%; }
-.eye { transform-box: fill-box; transform-origin: center; transition: transform 90ms ease-out; }
+.eye { transform-box: fill-box; transform-origin: center; transition: transform 70ms ease-out; }
+.tail-group { transform-box: view-box; transform-origin: 91px 154px; transition: transform 100ms ease-out; }
+.leg { transform-box: view-box; transform-origin: center; }
 .dog-art.blink .eye { transform: scaleY(.08) !important; transition: transform 75ms ease-in; }
 .tap-hint { margin-top: -5px; font-size: 8px; letter-spacing: .2em; color: #9d866c; font-weight: 800; }
 .speech {
@@ -54,7 +56,7 @@ button { font: inherit; }
 .action-button span { font-size: 14px; color: #a16c42; }
 .footnote { font-size: 7px; letter-spacing: .14em; font-weight: 800; color: #a6937b; margin: auto 0 0; padding-top: 7px; }
 .wag .dog-art { animation: wag .55s ease-in-out; }
-.wag .tail { animation: tail-wag .28s ease-in-out 2; transform-origin: 78px 160px; }
+.wag .tail-group { animation: tail-wag .24s ease-in-out 4; }
 .pet-shell.is-napping .status { color: #aa8652; }
 .pet-shell.is-napping .speech { background: rgba(244,237,224,.9); }
 .pet-toolbar, .footnote { -webkit-app-region: drag; }
@@ -63,8 +65,11 @@ button { font: inherit; }
 .is-napping .status-dot { background: #c39a58; }
 .is-hidden { opacity: 0; pointer-events: none; }
 .typing-reaction .dog-art { animation: typing-bounce .72s ease-in-out; }
-.typing-reaction .tail { animation: tail-wag .3s ease-in-out 2; transform-origin: 78px 160px; }
-.walking .dog-art { animation: walk-bob .2s ease-in-out 3 alternate; }
+.typing-reaction .tail-group { animation: tail-wag .25s ease-in-out 3; }
+.walking .dog-art { animation: walk-bob .34s ease-in-out infinite alternate; }
+.walking .leg-front-left, .walking .leg-back-right { animation: leg-step .34s ease-in-out infinite alternate; }
+.walking .leg-front-right, .walking .leg-back-left { animation: leg-step .34s ease-in-out infinite alternate-reverse; }
+.walking .tail-group { animation: tail-walk .38s ease-in-out infinite alternate; }
 @keyframes tail-wag {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(13deg); }
