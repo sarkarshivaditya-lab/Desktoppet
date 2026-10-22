@@ -46,9 +46,6 @@
     ],
     "category": "Utility",
     "shortDescription": "A German Shepherd desktop companion",
-    "longDescription": "A small, lightweight desktop dog for Windows and macOS.",
-    "icon": [
-      "icons/icon.png"
-    ]
+    "longDescription": "A small, lightweight desktop dog for Windows and macOS."
   }
 }
