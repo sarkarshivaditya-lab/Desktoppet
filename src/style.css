@@ -57,6 +57,7 @@ button { font: inherit; }
 .footnote { font-size: 7px; letter-spacing: .14em; font-weight: 800; color: #a6937b; margin: auto 0 0; padding-top: 7px; }
 .wag .dog-art { animation: wag .55s ease-in-out; }
 .wag .tail-group { animation: tail-wag .24s ease-in-out 4; }
+.pet-shell.idle:not(.walking):not(.typing-reaction) .tail-group { animation: tail-idle 1.25s ease-in-out infinite alternate; }
 .pet-shell.is-napping .status { color: #aa8652; }
 .pet-shell.is-napping .speech { background: rgba(244,237,224,.9); }
 .pet-toolbar, .footnote { -webkit-app-region: drag; }
@@ -95,7 +96,7 @@ button { font: inherit; }
   from { transform: rotate(-13deg) translateY(1px); }
   to { transform: rotate(13deg) translateY(-1px); }
 }
-@keyframes tail-walk {
+@keyframes tail-idle {\n  0% { transform: rotate(-5deg); }\n  50% { transform: rotate(8deg); }\n  100% { transform: rotate(-2deg); }\n}\n@keyframes tail-walk {
   from { transform: rotate(-12deg); }
   to { transform: rotate(16deg); }
 }
