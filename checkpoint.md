@@ -101,3 +101,10 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Idle wag is paused during the walk, nap, and short typing/petting reaction so the animations do not compete. Idle mode resumes after those reactions.
 - Current keydown listener still only receives keys when the pet window itself receives keyboard events. Reacting to typing in other apps needs a native, explicit opt-in activity signal; this pass does not claim system-wide typing detection.
 - Build and runtime verification remain pending.
+
+
+## Build warning fix — tail-idle CSS (2026-10-22)
+
+- User ran `npm run build`: TypeScript and Vite completed, but CSS minification reported literal `\\n` characters inside the `@keyframes tail-idle` declaration.
+- Fixed the CSS source by replacing those escaped newline sequences with actual line breaks. The prior build did finish, but this warning meant the idle keyframes were not being parsed correctly.
+- Awaiting user's next `npm run build` output to verify the warning is gone.
