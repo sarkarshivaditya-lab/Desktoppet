@@ -42,13 +42,11 @@
     }
   },
   "bundle": {
-    "active": true,
-    "targets": [
-      "nsis",
-      "dmg"
-    ],
-    "category": "Utility",
-    "shortDescription": "A German Shepherd desktop companion",
-    "longDescription": "A small, lightweight desktop dog for Windows and macOS."
-  }
+  "active": true,
+  "targets": ["nsis", "dmg"],
+  "icon": ["icons/icon-test.png"],
+  "category": "Utility",
+  "shortDescription": "A German Shepherd desktop companion",
+  "longDescription": "A small, lightweight desktop dog for Windows and macOS."
+}
 }
