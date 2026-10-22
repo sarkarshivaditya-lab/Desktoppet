@@ -1,5 +1,13 @@
-# Ponytail, lazy senior dev mode
+# Repository agent rules
 
-Use the official [Ponytail skill](skills/ponytail/SKILL.md) for coding work. The best code is the code never written: make the smallest complete change, trace affected callers, preserve validation, error handling, security and accessibility, and test non-trivial logic. Reuse platform features and existing dependencies before adding new ones. Do not add speculative abstractions, config, or dependencies. End implementation summaries with what was not checked and any material risk.
+**Ponytail is mandatory.** Before coding, read [`skills/ponytail/SKILL.md`](skills/ponytail/SKILL.md) and work in its `full` mode unless the user requests another level. Read [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md) before changing desktop architecture. Prefer the smallest complete diff, native platform APIs and already-installed dependencies. Add a focused test for non-trivial logic. Do not introduce speculative abstractions or dependencies.
 
-The source rules are from DietrichGebert/ponytail, used under MIT; see skills/ponytail/LICENSE.
+## Product constraints
+- This is a real desktop pet, not a conventional dashboard: preserve a transparent, frameless, always-on-top window and a responsive, low-resource frontend.
+- The pet is an original German Shepherd character. Do not import third-party character art or model assets without verifying their exact licence and attribution requirements.
+- Windows and macOS are first-class targets. Do not claim cross-platform compatibility from a single OS build. Verify packaging and runtime behavior on both platforms.
+- Keep native Tauri permissions minimal. Every capability permission must have a concrete feature that needs it.
+- Keep builds reproducible; prefer the lockfile and `npm ci` in CI. Do not silently migrate frameworks.
+
+## Completion report
+State checks actually run, checks not run, and material platform/licensing risks. Never imply a build or test ran when it did not.
