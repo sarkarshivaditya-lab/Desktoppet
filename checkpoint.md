@@ -73,5 +73,5 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 
 ## Current phase handoff
 
-- Found a likely visual polish issue in the current stylesheet: `.dog-art` is set to both `width: 100%` and `height: 100%`, which can distort the SVG's 280×270 viewBox inside the 320×360 native window. Preserve its aspect ratio before tuning animation details.
+- Corrected the SVG sizing in `src/style.css`: the dog now uses a bounded width and automatic height, preserving the 280×270 viewBox ratio instead of stretching to fill the 320×360 window. This is a source change only; it has not been runtime-verified by the editing agent.
 - User's statement that the basics are complete is the current product-status signal; it does not constitute a build log. Keep verification claims explicit.
