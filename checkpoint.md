@@ -139,3 +139,10 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Added a small macOS native CoreGraphics command that returns the current pointer coordinates, and a frontend poll that maps those coordinates into the pet window so eye gaze can update while another app is focused. It reads pointer coordinates only; it does not capture keyboard input or typed text.
 - Non-macOS builds currently return no global cursor position and retain in-window pointer tracking.
 - This implementation has not been compiled or runtime-tested on the user's Mac. Check Rust FFI compilation and coordinate alignment after pulling; display scaling/multiple-monitor coordinate mapping may need adjustment based on runtime results.
+
+
+## Documentation and cutout preview (2026-10-22)
+
+- Added `docs/desktop-pet-cutout.svg`, a transparent-background static preview of the German Shepherd artwork, so the README can show the actual pet cutout rather than a generic screenshot.
+- README refresh is in progress: document this as a passion project, provide macOS and Windows prerequisites, clone/setup/development commands, and platform-specific packaging output.
+- The SVG preview is a static illustration; it does not represent live animation or prove the native app has been built. Build/runtime verification remains pending on macOS and Windows.
