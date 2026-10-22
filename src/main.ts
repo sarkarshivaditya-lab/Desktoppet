@@ -19,44 +19,36 @@ app.innerHTML = `
       <button class="icon-button" id="hide" title="Hide pet" aria-label="Hide pet">−</button>
     </div>
     <button class="dog-button" id="dog" aria-label="Pet your German Shepherd">
-      <svg class="dog-art" viewBox="0 0 280 270" role="img" aria-label="Illustration of a German Shepherd dog">
+      <svg class="dog-art" viewBox="0 0 280 270" role="img" aria-label="Original illustration of a German Shepherd dog">
         <defs>
           <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#d7a15c"/>
-            <stop offset=".55" stop-color="#a96b36"/>
-            <stop offset="1" stop-color="#704323"/>
+            <stop offset="0" stop-color="#d7a15c"/><stop offset=".55" stop-color="#a96b36"/><stop offset="1" stop-color="#704323"/>
           </linearGradient>
           <linearGradient id="darkCoat" x1="0" y1="0" x2=".8" y2="1">
-            <stop offset="0" stop-color="#37302b"/>
-            <stop offset="1" stop-color="#171717"/>
+            <stop offset="0" stop-color="#37302b"/><stop offset="1" stop-color="#171717"/>
           </linearGradient>
           <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#f2d4a4"/>
-            <stop offset="1" stop-color="#cda274"/>
+            <stop offset="0" stop-color="#f2d4a4"/><stop offset="1" stop-color="#cda274"/>
           </linearGradient>
         </defs>
         <ellipse cx="140" cy="239" rx="81" ry="13" fill="#111" opacity=".14"/>
-        <path d="M77 173 C47 156 35 130 39 104 C42 88 55 79 68 88 C78 96 78 113 71 127 C66 141 79 153 97 155Z" fill="url(#darkCoat)"/>
+        <path class="tail" d="M77 173 C47 156 35 130 39 104 C42 88 55 79 68 88 C78 96 78 113 71 127 C66 141 79 153 97 155Z" fill="url(#darkCoat)"/>
         <path d="M83 154 C76 178 74 200 75 224 Q75 235 86 235 H110 Q119 233 117 223 L110 167Z" fill="url(#coat)"/>
         <path d="M151 165 C153 184 161 207 160 225 Q160 235 171 235 H192 Q202 233 199 224 L192 167Z" fill="url(#darkCoat)"/>
         <path d="M105 151 C91 159 86 185 93 210 L102 231 Q105 237 113 233 L125 229 Q132 226 128 216 L127 179 L157 178 L165 220 Q166 232 177 233 L189 231 Q196 229 194 218 L185 169 C177 149 150 143 105 151Z" fill="url(#coat)"/>
         <path d="M100 166 C115 183 151 187 176 168 L189 197 C177 212 154 217 130 210 C109 204 99 187 100 166Z" fill="url(#darkCoat)"/>
         <path d="M95 100 C90 74 93 47 110 17 Q116 8 122 21 L144 66 L163 21 Q169 10 176 20 C191 46 190 76 181 101 L171 128 L105 128Z" fill="url(#darkCoat)"/>
-        <path d="M112 23 L135 69 L119 79 L103 55Z" fill="#34261c"/>
-        <path d="M170 24 L154 69 L170 79 L183 53Z" fill="#34261c"/>
+        <path d="M112 23 L135 69 L119 79 L103 55Z" fill="#34261c"/><path d="M170 24 L154 69 L170 79 L183 53Z" fill="#34261c"/>
         <path d="M104 72 C115 57 132 54 141 58 C151 54 169 59 179 73 L188 105 C190 130 173 151 145 153 C116 153 97 133 96 108Z" fill="url(#coat)"/>
         <path d="M105 72 C117 61 132 60 141 66 C152 60 165 63 178 73 L168 101 L147 115 L124 101Z" fill="url(#darkCoat)"/>
         <path d="M110 91 C117 82 128 82 137 91 L137 113 C133 127 125 133 116 127 C109 120 106 102 110 91Z" fill="#342b25"/>
         <path d="M151 91 C160 82 171 84 176 93 C179 105 176 121 168 127 C159 133 151 126 150 113Z" fill="#342b25"/>
         <path d="M117 121 C130 112 158 112 170 121 C166 140 155 149 143 149 C130 149 120 139 117 121Z" fill="url(#cream)"/>
-        <ellipse cx="125" cy="101" rx="7" ry="8" fill="#111"/>
-        <ellipse cx="161" cy="101" rx="7" ry="8" fill="#111"/>
-        <circle cx="127" cy="98" r="2" fill="#fff"/>
-        <circle cx="163" cy="98" r="2" fill="#fff"/>
+        <ellipse cx="125" cy="101" rx="7" ry="8" fill="#111"/><ellipse cx="161" cy="101" rx="7" ry="8" fill="#111"/>
+        <circle cx="127" cy="98" r="2" fill="#fff"/><circle cx="163" cy="98" r="2" fill="#fff"/>
         <path d="M132 122 Q143 115 154 122 Q151 132 143 132 Q135 131 132 122Z" fill="#191715"/>
         <path d="M143 131 L143 139 Q140 142 137 139" fill="none" stroke="#704b38" stroke-width="2" stroke-linecap="round"/>
-        <path d="M99 97 C88 94 83 104 91 111 C95 115 101 114 105 108Z" fill="url(#cream)"/>
-        <path d="M181 98 C192 94 198 104 190 112 C186 116 180 114 176 108Z" fill="url(#cream)"/>
+        <path d="M99 97 C88 94 83 104 91 111 C95 115 101 114 105 108Z" fill="url(#cream)"/><path d="M181 98 C192 94 198 104 190 112 C186 116 180 114 176 108Z" fill="url(#cream)"/>
         <path d="M112 142 C125 159 159 159 174 142 L183 158 C167 178 122 181 101 158Z" fill="#bd8952"/>
         <path d="M104 152 C117 166 166 169 180 151 L188 168 C172 190 111 187 96 165Z" fill="url(#darkCoat)"/>
         <path d="M92 209 L94 226 Q95 234 105 233 L116 231 Q124 229 120 220 L115 207Z" fill="#2c2119"/>
@@ -65,10 +57,7 @@ app.innerHTML = `
       </svg>
       <span class="tap-hint">TAP TO PET</span>
     </button>
-    <div class="speech" aria-live="polite">
-      <span class="speech-mark">“</span>
-      <p id="phrase">Ready when you are.</p>
-    </div>
+    <div class="speech" aria-live="polite"><span class="speech-mark">“</span><p id="phrase">Ready when you are.</p></div>
     <div class="pet-actions">
       <button class="action-button" id="hello"><span aria-hidden="true">♡</span> Say hello</button>
       <button class="action-button" id="nap"><span aria-hidden="true">☾</span> Take a nap</button>
@@ -77,33 +66,51 @@ app.innerHTML = `
   </main>
 `;
 
-const phrase = document.querySelector<HTMLParagraphElement>("#phrase")!;
-const dog = document.querySelector<HTMLButtonElement>("#dog")!;
-const shell = document.querySelector<HTMLElement>(".pet-shell")!;
+const phrase = document.querySelector<HTMLParagraphElement>("#phrase");
+const dog = document.querySelector<HTMLButtonElement>("#dog");
+const shell = document.querySelector<HTMLElement>(".pet-shell");
+if (!phrase || !dog || !shell) throw new Error("Pet UI failed to initialize");
 
 function speak(text: string) {
   phrase.textContent = text;
   shell.classList.remove("is-napping");
+  shell.classList.add("is-awake");
+}
+
+function wagTail() {
+  dog.classList.remove("wag");
+  void dog.offsetWidth;
+  dog.classList.add("wag");
 }
 
 dog.addEventListener("click", () => {
   speak(phrases[phraseIndex % phrases.length]);
   phraseIndex += 1;
-  dog.classList.remove("wag");
-  void dog.offsetWidth;
-  dog.classList.add("wag");
+  wagTail();
 });
-document.querySelector("#hello")?.addEventListener("click", () => speak("Hello, friend. You’re doing fine."));
-document.querySelector("#nap")?.addEventListener("click", () => {
-  shell.classList.toggle("is-napping");
-  phrase.textContent = shell.classList.contains("is-napping") ? "I’ll rest my paws for a bit." : "Back on duty.";
+
+document.querySelector<HTMLButtonElement>("#hello")?.addEventListener("click", () => {
+  speak("Hello, friend. You’re doing fine.");
+  wagTail();
 });
-document.querySelector("#hide")?.addEventListener("click", async () => {
+
+document.querySelector<HTMLButtonElement>("#nap")?.addEventListener("click", () => {
+  const napping = shell.classList.toggle("is-napping");
+  phrase.textContent = napping ? "I’ll rest my paws for a bit." : "Back on duty.";
+});
+
+document.querySelector<HTMLButtonElement>("#hide")?.addEventListener("click", async () => {
   if ("__TAURI_INTERNALS__" in window) {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
     await getCurrentWindow().hide();
-  } else {
-    // Browser preview has no native window to hide.
-    shell.classList.toggle("is-hidden");
+    return;
   }
+  // Browser preview has no native window; keep the preview recoverable.
+  shell.classList.toggle("is-hidden");
 });
+
+if ("__TAURI_INTERNALS__" in window) {
+  // Enable OS-native dragging on the pet surface without preventing button clicks.
+  document.querySelector(".pet-toolbar")?.setAttribute("data-tauri-drag-region", "");
+  document.querySelector(".footnote")?.setAttribute("data-tauri-drag-region", "");
+}
