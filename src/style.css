@@ -96,7 +96,12 @@ button { font: inherit; }
   from { transform: rotate(-13deg) translateY(1px); }
   to { transform: rotate(13deg) translateY(-1px); }
 }
-@keyframes tail-idle {\n  0% { transform: rotate(-5deg); }\n  50% { transform: rotate(8deg); }\n  100% { transform: rotate(-2deg); }\n}\n@keyframes tail-walk {
+@keyframes tail-idle {
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(8deg); }
+  100% { transform: rotate(-2deg); }
+}
+@keyframes tail-walk {
   from { transform: rotate(-12deg); }
   to { transform: rotate(16deg); }
 }
