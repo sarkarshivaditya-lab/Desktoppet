@@ -155,8 +155,8 @@ document.addEventListener("pointerdown", () => {
 
 document.addEventListener("pointermove", (event) => {
   const rect = art.getBoundingClientRect();
-  const x = Math.max(-2.5, Math.min(2.5, ((event.clientX - rect.left) / rect.width - 0.5) * 5));
-  const y = Math.max(-2, Math.min(2, ((event.clientY - rect.top) / rect.height - 0.37) * 4));
+  const x = Math.max(-5, Math.min(5, ((event.clientX - rect.left) / rect.width - 0.5) * 10));
+  const y = Math.max(-4, Math.min(4, ((event.clientY - rect.top) / rect.height - 0.37) * 8));
   eyes.forEach((eye) => {
     eye.style.transform = `translate(${x}px, ${y}px)`;
   });
