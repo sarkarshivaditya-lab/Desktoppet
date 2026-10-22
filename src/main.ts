@@ -84,6 +84,8 @@ const eyes = Array.from(document.querySelectorAll<SVGGElement>(".eye"));
 let lastUserInteraction = Date.now();
 let lastTypingReaction = 0;
 let roamTimer: number | undefined;
+let idleWagTimer: number | undefined;
+shell.classList.add("idle");
 
 function speak(text: string) {
   phrase.textContent = text;
@@ -92,9 +94,15 @@ function speak(text: string) {
 }
 
 function wagTail() {
+  shell.classList.remove("idle");
+  if (idleWagTimer !== undefined) window.clearTimeout(idleWagTimer);
   dog.classList.remove("wag");
   void dog.offsetWidth;
   dog.classList.add("wag");
+  window.setTimeout(() => {
+    dog.classList.remove("wag");
+    if (!shell.classList.contains("is-napping") && !shell.classList.contains("walking")) shell.classList.add("idle");
+  }, 1200);
 }
 
 function blink() {
@@ -109,10 +117,14 @@ function reactToTyping() {
   const now = Date.now();
   if (now - lastTypingReaction < 1800 || shell.classList.contains("is-napping")) return;
   lastTypingReaction = now;
+  shell.classList.remove("idle");
   shell.classList.remove("typing-reaction");
   void shell.offsetWidth;
   shell.classList.add("typing-reaction");
-  window.setTimeout(() => shell.classList.remove("typing-reaction"), 850);
+  window.setTimeout(() => {
+    shell.classList.remove("typing-reaction");
+    if (!shell.classList.contains("is-napping") && !shell.classList.contains("walking")) shell.classList.add("idle");
+  }, 850);
 }
 
 dog.addEventListener("click", () => {
@@ -131,6 +143,8 @@ document.querySelector<HTMLButtonElement>("#hello")?.addEventListener("click", (
 
 document.querySelector<HTMLButtonElement>("#nap")?.addEventListener("click", () => {
   const napping = shell.classList.toggle("is-napping");
+  if (napping) shell.classList.remove("idle");
+  else shell.classList.add("idle");
   phrase.textContent = napping ? "I’ll rest my paws for a bit." : "Back on duty.";
   lastUserInteraction = Date.now();
 });
@@ -207,6 +221,7 @@ if ("__TAURI_INTERNALS__" in window) {
             const endX = Math.round(startX + (targetX - startX) * scale);
             const endY = Math.round(startY + (targetY - startY) * scale);
             const duration = 1400;
+            shell.classList.remove("idle");
             shell.classList.add("walking");
             await new Promise<void>((resolve) => {
               const started = performance.now();
@@ -231,7 +246,10 @@ if ("__TAURI_INTERNALS__" in window) {
               };
               window.requestAnimationFrame((now) => { void step(now); });
             });
-            window.setTimeout(() => shell.classList.remove("walking"), 250);
+            window.setTimeout(() => {
+              shell.classList.remove("walking");
+              if (!shell.classList.contains("is-napping") && !shell.classList.contains("typing-reaction")) shell.classList.add("idle");
+            }, 250);
           }
         }
       } catch (error) {
