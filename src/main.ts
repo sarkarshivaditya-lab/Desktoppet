@@ -66,10 +66,13 @@ app.innerHTML = `
   </main>
 `;
 
-const phrase = document.querySelector<HTMLParagraphElement>("#phrase");
-const dog = document.querySelector<HTMLButtonElement>("#dog");
-const shell = document.querySelector<HTMLElement>(".pet-shell");
-if (!phrase || !dog || !shell) throw new Error("Pet UI failed to initialize");
+const phraseElement = document.querySelector<HTMLParagraphElement>("#phrase");
+const dogElement = document.querySelector<HTMLButtonElement>("#dog");
+const shellElement = document.querySelector<HTMLElement>(".pet-shell");
+if (!phraseElement || !dogElement || !shellElement) throw new Error("Pet UI failed to initialize");
+const phrase: HTMLParagraphElement = phraseElement;
+const dog: HTMLButtonElement = dogElement;
+const shell: HTMLElement = shellElement;
 
 function speak(text: string) {
   phrase.textContent = text;
