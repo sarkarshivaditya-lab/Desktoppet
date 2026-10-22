@@ -89,3 +89,11 @@ The user's local build previously succeeded. The user reports the app is now wor
 ## 7. Immediate next task
 
 Audit the current source at the baseline commit, confirm the actual frontend component structure and available test/build commands, and then propose the first minimal implementation slice for a desktop-resident animated dog. Prioritize a working interaction foundation over cosmetic redesign.
+
+
+## Default-branch documentation publication (2026-10-22)
+
+- Published the updated README and `docs/desktop-pet-cutout.svg` to `main) as documentation-only commits so visitors opening the default branch can see the current project description and artwork.
+- The fuller checkpoint remains on `feat/desktop-pet-interactions`; the `main` checkpoint has not been replaced wholesale to avoid overwriting its independent history.
+- The interaction code remains under open draft PR #1 and has **not** been merged to `main`, because native behavior and platform builds remain unverified.
+- README on main now links to the cutout asset on the same branch.
