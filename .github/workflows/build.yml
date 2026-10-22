@@ -14,8 +14,10 @@ jobs:
       matrix:
         include:
           - os: macos-latest
+            args: --target aarch64-apple-darwin
             rust-target: aarch64-apple-darwin
           - os: windows-latest
+            args: ""
             rust-target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
@@ -29,4 +31,6 @@ jobs:
           targets: ${{ matrix.rust-target }}
       - run: npm install
       - run: npm run build
-      - run: npm run tauri build -- --target ${{ matrix.rust-target }}
+      - uses: tauri-apps/tauri-action@v1
+        with:
+          args: ${{ matrix.args }}
