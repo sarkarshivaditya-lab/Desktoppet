@@ -4,7 +4,7 @@
 **Baseline commit:** `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`  
 **Interaction branch:** `feat/desktop-pet-interactions`  
 **Repository:** https://github.com/sarkarshivaditya-lab/Desktoppet  
-**Status:** First interaction milestone committed to `feat/desktop-pet-interactions`; native build/runtime verification pending.\n**Latest implementation commit before this checkpoint update:** `2a5966302c8890c8f44abfe77cc72e8325d41181`
+**Status:** Core prototype and transparent dog-only presentation are in place; moving into fine-tuning. User reports the basics are now complete. The editing agent has not independently run a local build/runtime check.
 
 ## Product goal
 
@@ -27,6 +27,18 @@ Build a lightweight desktop-resident German Shepherd companion rather than a con
 - Manual pointer interaction postpones roaming for 12 seconds; napping pauses roaming.
 - Added narrow Tauri permissions for reading the current monitor/outer window size and setting the window position.
 - Existing petting, hello, nap, and hide controls are retained.
+
+## Fine-tuning phase
+
+The user has confirmed the basics are complete and wants to shift from foundational implementation to polish. Preserve the dog-only transparent cutout; do not reintroduce the card UI.
+
+Priority polish areas:
+
+1. Visual proportions and framing: keep the SVG at its natural aspect ratio, avoid clipping ears/tail/paws, and keep the dog visually centered in the transparent window.
+2. Interaction feel: tune blink timing, gaze range/easing, petting feedback, and idle movement so animations feel subtle rather than repetitive.
+3. Roaming feel: tune idle delay, movement distance/duration, and pauses based on actual runtime observations; avoid abrupt or overly frequent movement.
+4. Desktop integration: evaluate click-through outside the dog while preserving clicks on the dog; separately consider global cursor tracking and opt-in typing activity if still desired.
+5. Packaging polish: replace the diagnostic icon and validate macOS behavior before claiming platform support.
 
 ## Known limitations and risks
 
@@ -57,3 +69,9 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Tauri window config was already set to `transparent: true`, `decorations: false`, and a fully transparent RGBA background, so no native config change was required for this visual milestone.
 - This is a visual cutout, not yet an alpha-shaped native hit-test region: the rectangular transparent window can still intercept pointer input in its bounds. True click-through outside the dog requires native hit-testing work and must be designed without breaking petting.
 - Build/runtime verification remains pending.
+
+
+## Current phase handoff
+
+- Found a likely visual polish issue in the current stylesheet: `.dog-art` is set to both `width: 100%` and `height: 100%`, which can distort the SVG's 280×270 viewBox inside the 320×360 native window. Preserve its aspect ratio before tuning animation details.
+- User's statement that the basics are complete is the current product-status signal; it does not constitute a build log. Keep verification claims explicit.
