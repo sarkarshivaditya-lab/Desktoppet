@@ -99,11 +99,11 @@ document.querySelector("#nap")?.addEventListener("click", () => {
   phrase.textContent = shell.classList.contains("is-napping") ? "I’ll rest my paws for a bit." : "Back on duty.";
 });
 document.querySelector("#hide")?.addEventListener("click", async () => {
-  try {
+  if (window.__TAURI_INTERNALS__) {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
     await getCurrentWindow().hide();
-  } catch {
-    // In browser preview, hide the pet shell instead of calling desktop APIs.
+  } else {
+    // Browser preview has no native window to hide.
     shell.classList.toggle("is-hidden");
   }
 });
