@@ -1,0 +1,16 @@
+[package]
+name = "desktoppet"
+version = "0.1.0"
+description = "A German Shepherd desktop companion"
+authors = ["DesktopPet contributors"]
+edition = "2021"
+
+[lib]
+name = "desktoppet_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
