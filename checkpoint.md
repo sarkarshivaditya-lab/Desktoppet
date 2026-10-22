@@ -146,3 +146,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Added `docs/desktop-pet-cutout.svg`, a transparent-background static preview of the German Shepherd artwork, so the README can show the actual pet cutout rather than a generic screenshot.
 - README refresh is in progress: document this as a passion project, provide macOS and Windows prerequisites, clone/setup/development commands, and platform-specific packaging output.
 - The SVG preview is a static illustration; it does not represent live animation or prove the native app has been built. Build/runtime verification remains pending on macOS and Windows.
+
+
+## README and setup guide completed (2026-10-22)
+
+- Refreshed `README.md` with a passion-project introduction, the transparent dog cutout preview, feature summary, current limitations, contribution notes, and separate macOS/Windows setup and run instructions.
+- Documented development commands (`npm install`, `npm run tauri -- dev`, `npm run build`) and packaging command (`npm run tauri -- build`), with expected DMG/macOS app and Windows NSIS output folders.
+- Linked the repository Releases page for installers while making clear that source builds are the fallback if no release assets are published.
+- Commits on `feat/desktop-pet-interactions`: cutout preview asset `0356b0b8ac6c4bdab4caedf60cf68a18bd408f51`; checkpointed asset `431a27d5455aa13be43815360d47d70d80cde70a`; README `a7d7dc17ebd646fb2ddd76ee35a2e55b645e7572`.
+- Documentation changes are committed remotely. The app itself has not been built or runtime-tested as part of this documentation pass; macOS and Windows packaging/runtime validation remains open.
