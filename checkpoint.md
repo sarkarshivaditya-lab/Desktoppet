@@ -2,90 +2,49 @@
 
 **Checkpoint date:** 2026-10-22  
 **Baseline commit:** `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`  
-**Branch:** `main`  
+**Interaction branch:** `feat/desktop-pet-interactions`  
 **Repository:** https://github.com/sarkarshivaditya-lab/Desktoppet  
-**Status:** Working early prototype; interaction and native desktop behaviour remain to be implemented.
+**Status:** First interaction milestone implemented in source; native build/runtime verification pending.
 
-## 1. Product goal
+## Product goal
 
-Build a lightweight cross-platform desktop companion featuring an original German Shepherd. The intended experience is a pet that lives on the user's desktop rather than a static pet displayed inside a conventional app window.
+Build a lightweight desktop-resident German Shepherd companion rather than a conventional app panel. Target behaviours are cursor-aware eyes, idle blinks, typing reactions, gentle desktop roaming, and eventually perching/hanging from other windows where native platform APIs allow it.
 
-Target behaviours:
-- Freely move around the desktop and interact with window edges, including hanging or perching on them where the platform permits.
-- Track the mouse cursor with natural eye movement.
-- React to typing with small, non-intrusive animations.
-- Provide idle, blink, look, movement, and interaction animations.
-- Keep the app lightweight and preserve normal user input and window interaction.
-- Support macOS and Windows where practical, with macOS as the current development environment.
+## Baseline and architecture
 
-## 2. Known architecture
+- Tauri 2 native desktop shell with Rust entry points under `src-tauri/src/`.
+- Vanilla TypeScript frontend served by Vite; the actual entry point is `src/main.ts` and styling is in `src/style.css` (not React).
+- The Tauri window is configured transparent, frameless, always-on-top, non-resizable, and hidden from the taskbar.
+- Original German Shepherd SVG is embedded in `src/main.ts`.
+- Baseline commit: `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`.
 
-Based on the project configuration and previous local build/debug session:
-- **Desktop shell:** Tauri 2, with Rust native entry points in `src-tauri/src/main.rs` and `src-tauri/src/lib.rs`.
-- **Frontend:** React, TypeScript, and Vite.
-- **Development server:** Vite at `http://localhost:1420/`.
-- **Frontend build output:** `dist/`, configured as Tauri's `frontendDist`.
-- **Window presentation:** configured as a small, transparent, frameless, always-on-top window; non-resizable and skipped in the taskbar.
-- **Packaging targets:** NSIS for Windows and DMG for macOS.
-- **Character presentation:** the current prototype shows a stylized German Shepherd and introductory UI inside the app window.
+## Implemented in this milestone
 
-The detailed source-file architecture should be updated after a full code review; this checkpoint deliberately does not assume animation, cursor tracking, or desktop-edge movement already exist.
+- Eye groups respond to pointer movement within the pet window, with bounded movement and a short easing transition.
+- Periodic idle blinks animate the eye groups.
+- Key activity delivered to the pet window triggers a brief bounce/tail animation. The app does not record or retain typed text.
+- In Tauri runtime, the pet periodically chooses a random safe position within the current monitor and moves there after a short walking animation.
+- Manual interaction pauses roaming for 12 seconds; napping pauses roaming.
+- Added narrow Tauri permissions for reading the current monitor/outer window size and setting the window position.
+- Existing petting, hello, nap, and hide controls are retained.
 
-## 3. Baseline state
+## Known limitations and risks
 
-At commit `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`:
-- The user reports that the app launches and displays the current dog UI.
-- A macOS native startup panic was traced to an icon buffer mismatch: Tauri expected 262,144 pixels for a 512×512 icon but received 81,920.
-- The committed change adds `src-tauri/icons/icon-test.png` and configures Tauri's bundle to use it. This is a diagnostic/test icon, not the intended final product artwork.
-- `package-lock.json` and `src-tauri/Cargo.lock` are committed to preserve dependency resolution.
-- The commit also includes `tsconfig.tsbuildinfo`, which is generated TypeScript build state and should generally not be versioned.
+- **Typing reaction scope:** current implementation reacts only to keyboard events delivered to the pet window. It does not observe typing in other applications. Detecting system-wide keyboard activity would require a separate native, permission-sensitive design and privacy review; no keystroke contents should ever be captured.
+- **Window perching:** roaming is screen-bounded, not yet attached to arbitrary application-window edges. Reliable window enumeration/attachment requires OS-specific native work (and separate validation on macOS and Windows).
+- **Roaming UX:** the window moves between random positions every roughly 22–40 seconds. This must be tried locally; if disruptive, reduce frequency or add a user toggle.
+- **Platform verification:** the implementation has not yet been built or exercised on the user's machine from this branch. macOS and Windows behavior must be tested separately.
+- **Reduced motion:** CSS respects `prefers-reduced-motion`; the native roaming timer should also be disabled when reduced-motion preference is active in a future refinement.
+- **Icon:** `icons/icon-test.png` remains a diagnostic icon and should be replaced by the production app icon after validating it.
 
-The user's local build previously succeeded. The user reports the app is now working, but a fresh build/test has not been independently run as part of this checkpoint.
+## Verification status
 
-## 4. Current limitations
+Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust build, macOS runtime interaction, Windows build/runtime, multi-monitor testing.
 
-1. The pet currently appears as a character in a compact app window, rather than behaving like a desktop-resident companion.
-2. Cursor-following eyes have not been verified or established as implemented.
-3. Typing-triggered reactions have not been verified or established as implemented.
-4. Desktop roaming, screen-boundary handling, and window-edge perching are not yet established as implemented.
-5. The test icon is temporary and should be replaced with a correctly encoded production icon once the native icon-loading issue is resolved.
-6. The full frontend and Rust source have not yet been exhaustively audited in this checkpoint.
+## Next steps
 
-## 5. Recommended implementation order
-
-### Phase A — Establish a stable baseline
-- Inspect all frontend components, CSS, Rust commands, Tauri configuration, and available scripts.
-- Run the frontend build, tests (if present), and Tauri development launch.
-- Record the exact commands and outcomes in this file.
-- Remove generated build-state files from version control and add appropriate ignore rules, without deleting useful source or lockfiles.
-- Replace the diagnostic icon with the final German Shepherd icon after validating it through Tauri.
-
-### Phase B — Character and animation foundation
-- Separate the dog rendering from surrounding prototype/onboarding UI so the pet can be rendered independently.
-- Define a small, explicit animation/state model: idle, blink, look, walk, perch, typing reaction, and user interaction.
-- Use lightweight vector/CSS animation or another suitable rendering approach based on the existing implementation; avoid introducing a heavy engine without evidence it is needed.
-- Ensure animations pause or reduce work when appropriate.
-
-### Phase C — Desktop interaction
-- Implement pointer tracking and smooth eye-gaze targets.
-- Add typing activity detection using a platform-appropriate, privacy-conscious mechanism. Do not capture or store typed text; detect activity only where possible.
-- Implement safe desktop movement and screen-boundary constraints.
-- Investigate native window positioning and edge/perching behaviour separately for macOS and Windows. Do not assume ordinary frontend dragging can attach to arbitrary application windows.
-
-### Phase D — Verification and packaging
-- Verify transparent rendering, click-through/interaction behaviour, focus behaviour, always-on-top behaviour, and multi-monitor positioning.
-- Test keyboard and mouse interactions without disrupting the user's active applications.
-- Run release builds for macOS and Windows where the relevant build environments are available.
-- Update this checkpoint with each completed phase, test results, and the next bounded task.
-
-## 6. Working rules
-
-- Treat the baseline commit above as the known-good starting point; do not treat this as a fresh project.
-- Make small, reviewable changes and verify each change with builds/tests.
-- Preserve the original German Shepherd concept and the user's requested desktop-first behaviour.
-- Do not claim a feature is complete until it has been implemented and tested.
-- Update this file after meaningful code changes with: commit, files changed, implementation status, verification results, known issues, and the next task.
-
-## 7. Immediate next task
-
-Audit the current source at the baseline commit, confirm the actual frontend component structure and available test/build commands, and then propose the first minimal implementation slice for a desktop-resident animated dog. Prioritize a working interaction foundation over cosmetic redesign.
+1. Pull this branch and run the frontend build.
+2. Run Tauri development mode; resolve any permission/API compile or runtime errors.
+3. Validate cursor gaze, blink, typing reaction while the pet window is focused, and safe roaming. Adjust or disable roaming if it interferes with normal use.
+4. Design a dedicated, user-controlled desktop mode.
+5. Implement window-edge perching only after a platform-specific approach is chosen and tested.
