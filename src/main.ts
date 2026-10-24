@@ -230,74 +230,116 @@ scheduleBlink();
 
 if ("__TAURI_INTERNALS__" in window) {
   const petWindow = getCurrentWindow();
-  const roam = async () => {
-    if (Date.now() - lastUserInteraction > 12000 && !shell.classList.contains("is-napping")) {
-      try {
-        const monitors = await availableMonitors();
-        const position = await petWindow.outerPosition();
-        const size = await petWindow.outerSize();
-        const monitor = monitors.find((item) =>
-          position.x >= item.position.x &&
-          position.y >= item.position.y &&
-          position.x < item.position.x + item.size.width &&
-          position.y < item.position.y + item.size.height
-        );
-        if (monitor) {
-          const padding = 18;
-          const minX = monitor.position.x + padding;
-          const minY = monitor.position.y + padding;
-          const maxX = monitor.position.x + monitor.size.width - size.width - padding;
-          const maxY = monitor.position.y + monitor.size.height - size.height - padding;
-          if (maxX >= minX && maxY >= minY) {
-            const startX = position.x;
-            const startY = position.y;
-            const targetX = Math.round(minX + Math.random() * (maxX - minX));
-            const targetY = Math.round(minY + Math.random() * (maxY - minY));
-            const distance = Math.hypot(targetX - startX, targetY - startY);
-            // Keep each roam short enough to feel intentional, not like a screen-wide teleport.
-            const scale = distance > 260 ? 260 / distance : 1;
-            const endX = Math.round(startX + (targetX - startX) * scale);
-            const endY = Math.round(startY + (targetY - startY) * scale);
-            const duration = 1400;
-            shell.classList.remove("idle");
-            shell.classList.add("walking");
-            await new Promise<void>((resolve) => {
-              const started = performance.now();
-              const step = async (now: number) => {
-                const raw = Math.min(1, (now - started) / duration);
-                const eased = raw * raw * (3 - 2 * raw);
-                try {
-                  await petWindow.setPosition(new PhysicalPosition(
-                    Math.round(startX + (endX - startX) * eased),
-                    Math.round(startY + (endY - startY) * eased)
-                  ));
-                } catch (error) {
-                  console.warn("Could not animate pet window position.", error);
-                  resolve();
-                  return;
-                }
-                if (raw < 1) {
-                  window.requestAnimationFrame((next) => { void step(next); });
-                } else {
-                  resolve();
-                }
-              };
-              window.requestAnimationFrame((now) => { void step(now); });
-            });
-            window.setTimeout(() => {
-              shell.classList.remove("walking");
-              if (!shell.classList.contains("is-napping") && !shell.classList.contains("typing-reaction")) shell.classList.add("idle");
-            }, 250);
-          }
-        }
-      } catch (error) {
-        console.warn("Desktop roaming unavailable; pet remains stationary.", error);
-      }
-    }
-    roamTimer = window.setTimeout(roam, 22000 + Math.random() * 18000);
+  let roamInProgress = false;
+  let roamCancelled = false;
+  let roamGeneration = 0;
+
+  const scheduleNextRoam = () => {
+    if (roamTimer !== undefined) window.clearTimeout(roamTimer);
+    roamTimer = window.setTimeout(() => { void roam(); }, 22000 + Math.random() * 18000);
   };
-  roamTimer = window.setTimeout(roam, 18000);
+
+  const roam = async () => {
+    if (roamInProgress) return;
+    roamInProgress = true;
+    const thisGeneration = ++roamGeneration;
+    roamCancelled = false;
+    try {
+      if (Date.now() - lastUserInteraction <= 12000 || shell.classList.contains("is-napping")) return;
+      const monitors = await availableMonitors();
+      const position = await petWindow.outerPosition();
+      const size = await petWindow.outerSize();
+      if (thisGeneration !== roamGeneration || Date.now() - lastUserInteraction <= 12000 || shell.classList.contains("is-napping")) return;
+
+      const monitor = monitors.find((item) =>
+        position.x >= item.position.x &&
+        position.y >= item.position.y &&
+        position.x < item.position.x + item.size.width &&
+        position.y < item.position.y + item.size.height
+      );
+      if (!monitor) {
+        console.debug("Desktop roaming skipped: pet window is not inside a detected monitor.");
+        return;
+      }
+
+      const padding = 18;
+      const minX = monitor.position.x + padding;
+      const minY = monitor.position.y + padding;
+      const maxX = monitor.position.x + monitor.size.width - size.width - padding;
+      const maxY = monitor.position.y + monitor.size.height - size.height - padding;
+      if (maxX < minX || maxY < minY) {
+        console.debug("Desktop roaming skipped: monitor is smaller than the pet window bounds.");
+        return;
+      }
+
+      const startX = position.x;
+      const startY = position.y;
+      const targetX = Math.round(minX + Math.random() * (maxX - minX));
+      const targetY = Math.round(minY + Math.random() * (maxY - minY));
+      const distance = Math.hypot(targetX - startX, targetY - startY);
+      // Keep each roam short enough to feel intentional, not like a screen-wide teleport.
+      const scale = distance > 260 ? 260 / distance : 1;
+      const endX = Math.round(startX + (targetX - startX) * scale);
+      const endY = Math.round(startY + (targetY - startY) * scale);
+      const duration = 1400;
+      shell.classList.remove("idle");
+      shell.classList.add("walking");
+
+      await new Promise<void>((resolve) => {
+        const started = performance.now();
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          resolve();
+        };
+        const step = async (now: number) => {
+          if (finished) return;
+          if (thisGeneration !== roamGeneration || roamCancelled || Date.now() - lastUserInteraction <= 12000 || shell.classList.contains("is-napping")) {
+            finish();
+            return;
+          }
+          const raw = Math.min(1, (now - started) / duration);
+          const eased = raw * raw * (3 - 2 * raw);
+          try {
+            await petWindow.setPosition(new PhysicalPosition(
+              Math.round(startX + (endX - startX) * eased),
+              Math.round(startY + (endY - startY) * eased)
+            ));
+          } catch (error) {
+            console.warn("Could not animate pet window position; the next roam will be retried.", error);
+            finish();
+            return;
+          }
+          if (raw < 1) {
+            window.requestAnimationFrame((next) => { void step(next); });
+          } else {
+            finish();
+          }
+        };
+        window.requestAnimationFrame((now) => { void step(now); });
+      });
+    } catch (error) {
+      console.warn("Desktop roaming failed; preserving the current window position and retrying later.", error);
+    } finally {
+      shell.classList.remove("walking");
+      if (!shell.classList.contains("is-napping") && !shell.classList.contains("typing-reaction")) shell.classList.add("idle");
+      roamInProgress = false;
+      scheduleNextRoam();
+    }
+  };
+
+  // Any manual pointer interaction should invalidate stale animation frames so
+  // an in-progress roam cannot continue moving the window after user input.
+  document.addEventListener("pointerdown", () => {
+    roamCancelled = true;
+    roamGeneration += 1;
+  });
+
+  roamTimer = window.setTimeout(() => { void roam(); }, 18000);
   window.addEventListener("beforeunload", () => {
     if (roamTimer !== undefined) window.clearTimeout(roamTimer);
+    roamCancelled = true;
+    roamGeneration += 1;
   });
 }
