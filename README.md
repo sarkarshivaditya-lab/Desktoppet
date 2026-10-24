@@ -6,6 +6,19 @@ A little German Shepherd that lives on your desktop. **DesktopPet is a passion p
 
 *The illustration above is the pet's transparent cutout artwork. The running app adds movement and interaction.*
 
+## Which branch should I download?
+
+**For the latest DesktopPet prototype, use `feat/desktop-pet-interactions`.** This branch contains the current interaction work and is the branch used in the build instructions below. The changes have not yet been merged into `main`, so downloading `main` may give you an older version.
+
+Clone the recommended branch with:
+
+```bash
+git clone --branch feat/desktop-pet-interactions https://github.com/sarkarshivaditya-lab/Desktoppet.git
+cd Desktoppet
+```
+
+If you only want to browse the repository, the branch selector on GitHub lets you switch between `main` and `feat/desktop-pet-interactions`. Choose the feature branch for the version described in this README.
+
 ## What it does
 
 - A transparent, frameless desktop companion that stays above ordinary windows.
