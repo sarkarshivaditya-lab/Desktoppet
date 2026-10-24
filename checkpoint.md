@@ -1,10 +1,10 @@
 # DesktopPet — Project Checkpoint
 
-**Checkpoint date:** 2026-10-22  
+**Checkpoint date:** 2026-10-24  
 **Baseline commit:** `0d878f2a2bbceebc1a68c0d56674712b80c43cf5`  
 **Interaction branch:** `feat/desktop-pet-interactions`  
 **Repository:** https://github.com/sarkarshivaditya-lab/Desktoppet  
-**Status:** Core prototype and transparent dog-only presentation are in place; moving into fine-tuning. User reports the basics are now complete. The editing agent has not independently run a local build/runtime check.
+**Status:** Core prototype and transparent dog-only presentation are in place. User has confirmed that global typing reactions and the existing interactions work on macOS. Windows runtime verification remains pending; the editing agent has not independently run a local build/runtime check.
 
 ## Product goal
 
@@ -42,10 +42,10 @@ Priority polish areas:
 
 ## Known limitations and risks
 
-- **Typing reaction scope:** a native activity-only implementation is now present on the interaction branch for macOS (listen-only CoreGraphics event tap) and Windows (low-level keyboard hook). It records only the time of a key-down activity and exposes only a recent-activity boolean to the frontend. It must not inspect, emit, log, or persist key values or text. macOS Input Monitoring permission may be required. Both native implementations are awaiting platform builds and runtime verification.
+- **Typing reaction scope:** a native activity-only implementation is now present on the interaction branch for macOS (listen-only CoreGraphics event tap) and Windows (low-level keyboard hook). It records only the time of a key-down activity and exposes only a recent-activity boolean to the frontend. It must not inspect, emit, log, or persist key values or text. macOS Input Monitoring permission may be required. The user has now verified the macOS implementation in runtime; Windows still requires a separate build and runtime test.
 - **Window perching:** roaming is screen-bounded, not yet attached to arbitrary application-window edges. Reliable window enumeration/attachment requires OS-specific native work (and separate validation on macOS and Windows).
 - **Roaming UX:** native window animation now interpolates between nearby positions rather than jumping instantly. Tauri/macOS scheduling may still constrain how smooth external window movement appears; this needs local runtime testing.
-- **Platform verification:** the implementation has not yet been built or exercised on the user's machine from this branch. macOS and Windows behavior must be tested separately.
+- **Platform verification:** the user reports successful macOS runtime behavior for global typing and existing interactions. Windows behavior remains unverified and must be tested separately.
 - **Reduced motion:** CSS respects `prefers-reduced-motion`; the native roaming timer should also be disabled when reduced-motion preference is active in a future refinement.
 - **Icon:** `icons/icon-test.png` remains a diagnostic icon and should be replaced by the production app icon after validating it.
 
@@ -198,3 +198,13 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Commits: Rust hook `8032bd2faddac073e83495bbe0e8b243531acea1`; callback hardening `be0a8bdc80b3f7e94c15c50cc7d837f3e5c9a874`; Cargo dependency `21788c9bd49b6691fdaab37f6f888132297725e6`; frontend poll `dbefdc48f575351acc8e5401aabad70cedcfb7e2`.
 - macOS may require enabling DesktopPet under System Settings > Privacy & Security > Input Monitoring and restarting the app.
 - Build/runtime verification remains pending on macOS and Windows. Cargo may update `src-tauri/Cargo.lock` during the first build.
+
+
+## User verification checkpoint — global typing and core interactions (2026-10-24)
+
+- User reports that everything works after testing the new native global typing activity implementation on macOS.
+- Confirmed by user: typing in other applications triggers the dog without first clicking/focusing DesktopPet; the existing core interactions also work.
+- BUG-002 status is now **macOS verified by user; Windows verification pending**. README and BUG_TRACKER.md updated to match.
+- This is user-reported runtime verification on the user's Mac, not an independent build/test by the editing agent. Do not infer Windows compatibility from the macOS result.
+- Keep BUG-001's long-duration roaming observation open until the dog has been observed over an extended session; the user's statement that all tested interactions work does not specify a 30–60 minute soak test.
+- Next platform step: build and test on Windows, including global typing activity and regression checks for click/pet, drag, resize, nap, roaming, and animations.
