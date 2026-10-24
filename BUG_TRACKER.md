@@ -78,3 +78,13 @@ Not run by the editing agent. On the platform where the issue was observed:
 - macOS global cursor gaze still follows the pointer.
 
 **Current conclusion:** this is a defensive fix for a confirmed weakness in the roaming lifecycle, not a proven complete resolution of the user-visible disappearance. Runtime evidence is required to close BUG-001.
+
+
+## Documentation update — recommended download branch (2026-10-24)
+
+**Scope:** Documentation-only update on `main`; no application code was changed.
+
+- `README.md`: added a prominent note that users seeking the latest interaction prototype should clone `feat/desktop-pet-interactions`, because those changes have not been merged into `main`.
+- `checkpoint.md`: records this default-branch documentation update and its commit.
+- Verification: GitHub Contents API confirmed the file update was committed. No build or runtime test was applicable to this documentation-only change.
+- Follow-up: keep the feature branch available; do not tell users that the interaction implementation is present on `main` until it is actually merged.
