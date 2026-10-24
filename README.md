@@ -13,10 +13,11 @@ A little German Shepherd that lives on your desktop. **DesktopPet is a passion p
 - Tail and limb animation, plus a gentle idle state.
 - Click to pet, and drag the dog to reposition it.
 - Gentle roaming around the current monitor.
+- System-wide typing-activity reactions on macOS and Windows (native implementation; testing pending).
 - Resizable native window.
 - On macOS, native cursor tracking lets the eyes follow the pointer while another app is focused.
 
-**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. Global typing activity was attempted with `rdev` but caused a macOS native crash in keyboard-event conversion. The unstable dependency has been removed as a safety hotfix; typing reactions currently work only while DesktopPet is focused. A safer platform-native global activity signal remains future work. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
+**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. System-wide typing activity now uses platform-native activity signals on macOS and Windows. These signals record only that recent typing activity occurred; they do not read or store the typed content. macOS may require Input Monitoring permission in System Settings > Privacy & Security. The new implementation is awaiting build and runtime testing on both platforms. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
 
 ## Download and install
 
