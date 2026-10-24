@@ -214,13 +214,29 @@ if ("__TAURI_INTERNALS__" in window && navigator.userAgent.includes("Mac")) {
   window.addEventListener("beforeunload", () => window.clearInterval(cursorTimer));
 }
 
-// Safe fallback: react only to keyboard activity delivered to the pet window.
-// Capture at the document level so bubbled key events are handled even when a
-// child element is the focused target. This does not enable global monitoring.
+// Keep the local fallback for browser preview and as a secondary signal.
 document.addEventListener("keydown", (event) => {
   if (event.isComposing || event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
   reactToTyping();
 }, true);
+
+// Native platform hooks report only recent keyboard activity, never key identity or text.
+if ("__TAURI_INTERNALS__" in window) {
+  let checkingTypingActivity = false;
+  const pollTypingActivity = async () => {
+    if (checkingTypingActivity) return;
+    checkingTypingActivity = true;
+    try {
+      if (await invoke<boolean>("typing_activity_recent")) reactToTyping();
+    } catch (error) {
+      console.warn("Global typing activity is unavailable.", error);
+    } finally {
+      checkingTypingActivity = false;
+    }
+  };
+  const typingTimer = window.setInterval(() => { void pollTypingActivity(); }, 300);
+  window.addEventListener("beforeunload", () => window.clearInterval(typingTimer));
+}
 
 function scheduleBlink() {
   window.setTimeout(() => {
