@@ -58,7 +58,7 @@ Two source-level risks were identified:
 
 | File | Change | Commit |
 |---|---|---|
-| `src/main.ts` | Roam lifecycle/single-flight guard, cancellation after interaction, resilient animation scheduling and safer monitor bounds | Pending commit |
+| `src/main.ts` | Roam lifecycle/single-flight guard, cancellation after interaction, resilient animation scheduling and safer monitor bounds | `78239b654b64a74a23f5898c2d2a2f4137dd3a4b` |
 | `BUG_TRACKER.md` | New issue register; captures symptom, hypotheses, source audit, patch details, and required verification | Created before code audit |
 
 ### Verification plan
@@ -72,7 +72,7 @@ Run on the operating system where the issue was observed, then on the other supp
 5. Drag the dog manually during/just before a scheduled roam; it should remain where released until the next eligible idle roam.
 6. If the app still disappears, capture terminal output and OS crash/restart evidence. Record whether the whole native window process restarted; that would distinguish process recreation from an in-process position bug.
 
-**Verification status:** Source patch committed, but not compiled or runtime-tested by the editing agent. Fix is not considered verified until a real runtime test is reported.
+**Verification status:** Source patch committed (`78239b654b64a74a23f5898c2d2a2f4137dd3a4b`), but not compiled or runtime-tested by the editing agent. Fix is not considered verified until a real runtime test is reported.
 
 **Regression checks:** manual drag still works; click still pets; nap still pauses roaming; resizing does not break the bounds check; multiple monitors / mixed display scale factors are tested; global cursor gaze remains functional on macOS.
 
