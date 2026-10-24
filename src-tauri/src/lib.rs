@@ -1,6 +1,4 @@
 use tauri::Emitter;
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 #[cfg(target_os = "macos")]
 #[link(name = "ApplicationServices", kind = "framework")]
@@ -40,39 +38,10 @@ fn cursor_position() -> Option<(f64, f64)> {
     }
 }
 
-// Emit only a generic activity signal. Key identity is discarded immediately;
-// no key values or typed text are sent to the frontend, logged, or persisted.
-#[tauri::command]
-fn start_typing_monitor(app: tauri::AppHandle) -> Result<(), String> {
-    std::thread::spawn(move || {
-        let result = rdev::listen(move |event| {
-            if matches!(event.event_type, rdev::EventType::KeyPress(_)) {
-                static LAST_SIGNAL_MS: AtomicU64 = AtomicU64::new(0);
-                let now = SystemTime::now()
-                    .duration_since(UNIX_EPOCH)
-                    .unwrap_or_default()
-                    .as_millis() as u64;
-                let previous = LAST_SIGNAL_MS.load(Ordering::Relaxed);
-                if now.saturating_sub(previous) >= 250
-                    && LAST_SIGNAL_MS
-                        .compare_exchange(previous, now, Ordering::Relaxed, Ordering::Relaxed)
-                        .is_ok()
-                {
-                    let _ = app.emit("typing-activity", ());
-                }
-            }
-        });
-        if let Err(error) = result {
-            eprintln!("Global typing-activity monitor stopped: {error:?}");
-        }
-    });
-    Ok(())
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![cursor_position, start_typing_monitor])
+        .invoke_handler(tauri::generate_handler![cursor_position])
         .run(tauri::generate_context!())
         .expect("error while running DesktopPet");
 }
