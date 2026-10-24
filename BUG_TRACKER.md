@@ -72,7 +72,7 @@ Run on the operating system where the issue was observed, then on the other supp
 5. Drag the dog manually during/just before a scheduled roam; it should remain where released until the next eligible idle roam.
 6. If the app still disappears, capture terminal output and OS crash/restart evidence. Record whether the whole native window process restarted; that would distinguish process recreation from an in-process position bug.
 
-**Verification status:** Not run by the editing agent. Fix is not considered verified until a real runtime test is reported.
+**Verification status:** Source patch committed, but not compiled or runtime-tested by the editing agent. Fix is not considered verified until a real runtime test is reported.
 
 **Regression checks:** manual drag still works; click still pets; nap still pauses roaming; resizing does not break the bounds check; multiple monitors / mixed display scale factors are tested; global cursor gaze remains functional on macOS.
 
