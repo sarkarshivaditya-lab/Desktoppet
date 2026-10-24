@@ -19,7 +19,7 @@ Do not collapse multiple symptoms into one issue unless there is evidence they s
 | ID | Summary | Status | First recorded |
 |---|---|---|---|
 | BUG-001 | Pet disappears after some runtime, then reappears at launch position | Investigating | 2026-10-24 |
-| BUG-002 | Typing reaction does not work in other applications | Fix implemented — awaiting verification | 2026-10-24 |
+| BUG-002 | Typing reaction does not work in any application | Reopened — focused-window reaction investigating | 2026-10-24 |
 
 ---
 
@@ -126,3 +126,10 @@ The user supplied a macOS crash report for process `desktoppet` (macOS 27.0.1, A
 - `src/main.ts`: reverted to window-scoped typing events; commit [6f0e7b0](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/6f0e7b0267149eae325676d30c3ade5590c3cdba)
 
 **Verification:** not yet built or run after the hotfix. Test startup and type in another application; global reaction is expected to be disabled. Later replacement should use a platform-native activity signal that does not translate key codes to strings, with platform-specific testing.
+
+
+### Regression report — no typing reaction anywhere (2026-10-24)
+
+The user reports no reaction even when typing with DesktopPet focused. BUG-002 is reopened; this exceeds the expected limitation that global typing is disabled. Updated `src/main.ts` to use a capture-phase `document` keydown listener and ignore IME composition events. Removed the now-unused `tauri::Emitter` import from `src-tauri/src/lib.rs`. This is a defensive source-level adjustment, not a confirmed root-cause fix. Runtime verification remains pending.
+
+**Test:** run `npm run build`, then `npm run tauri -- dev`; click the pet window once and type ordinary letters while DesktopPet is focused. If it still does not react, capture the DevTools console and verify whether the webview receives focus. Global typing remains disabled until a safer native implementation is available.
