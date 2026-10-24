@@ -97,3 +97,14 @@ Audit the current source at the baseline commit, confirm the actual frontend com
 - The fuller checkpoint remains on `feat/desktop-pet-interactions`; the `main` checkpoint has not been replaced wholesale to avoid overwriting its independent history.
 - The interaction code remains under open draft PR #1 and has **not** been merged to `main`, because native behavior and platform builds remain unverified.
 - README on main now links to the cutout asset on the same branch.
+
+
+## Recommended download branch documented (2026-10-24)
+
+- Updated `README.md` on `main` to explicitly direct users to `feat/desktop-pet-interactions` for the latest prototype.
+- Reason: the interaction work remains unmerged, so the default branch does not yet contain all of the features described for the current prototype.
+- The README includes a direct `git clone --branch feat/desktop-pet-interactions` command and explains when to choose `main`.
+- Updated `BUG_TRACKER.md` to record the documentation-only change.
+- Commit on `main` for the README branch guidance: `36731705c2b83955321eb5ab318c80997a79d896`.
+- Verification: documentation changes were committed through GitHub; no app build/runtime test was run because no application code changed.
+- Branch policy remains unchanged: preserve `feat/desktop-pet-interactions`; it has not been merged or deleted.
