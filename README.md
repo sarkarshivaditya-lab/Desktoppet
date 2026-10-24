@@ -16,7 +16,7 @@ A little German Shepherd that lives on your desktop. **DesktopPet is a passion p
 - Resizable native window.
 - On macOS, native cursor tracking lets the eyes follow the pointer while another app is focused.
 
-**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. Typing reactions only respond to key events delivered to the pet window, not typing in other apps. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
+**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. A global typing-activity listener has been added on the feature branch for macOS and Windows, but it awaits build/runtime verification and may require OS input-monitoring or accessibility permission. It signals typing activity only; key values and typed text are not sent or stored. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
 
 ## Download and install
 
