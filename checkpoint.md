@@ -42,7 +42,7 @@ Priority polish areas:
 
 ## Known limitations and risks
 
-- **Typing reaction scope:** current implementation reacts only to keyboard events delivered to the pet window. It does not observe typing in other applications. System-wide activity detection has not been implemented; it needs a native, permission-sensitive design and explicit opt-in, and must never capture key values or typed text.
+- **Typing reaction scope:** a native activity-only implementation is now present on the interaction branch for macOS (listen-only CoreGraphics event tap) and Windows (low-level keyboard hook). It records only the time of a key-down activity and exposes only a recent-activity boolean to the frontend. It must not inspect, emit, log, or persist key values or text. macOS Input Monitoring permission may be required. Both native implementations are awaiting platform builds and runtime verification.
 - **Window perching:** roaming is screen-bounded, not yet attached to arbitrary application-window edges. Reliable window enumeration/attachment requires OS-specific native work (and separate validation on macOS and Windows).
 - **Roaming UX:** native window animation now interpolates between nearby positions rather than jumping instantly. Tauri/macOS scheduling may still constrain how smooth external window movement appears; this needs local runtime testing.
 - **Platform verification:** the implementation has not yet been built or exercised on the user's machine from this branch. macOS and Windows behavior must be tested separately.
@@ -187,3 +187,14 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 - Safety hotfix: removed `rdev` listener/command and dependency; restored window-focused `keydown` reaction to stop repeat crashes. Global typing reaction is temporarily disabled.
 - Commits: `3df9f4c802574bee0640f9dee4389b79104af438` (`src-tauri/src/lib.rs`), `6e713445216f71a20f431d5d1120af62fe296ee4` (`src-tauri/Cargo.toml`), `6f0e7b0267149eae325676d30c3ade5590c3cdba` (`src/main.ts`).
 - Build/runtime verification after hotfix remains pending. Next: rebuild, verify dog stays visible while typing in another app, then implement/test a safer platform-native activity-only signal without key-string conversion.
+
+
+## Global typing activity replacement — 2026-10-24
+
+- User confirmed the focused-window reaction works; only typing in other applications failed.
+- Replaced the prior crashing global listener with platform-native activity-only hooks: a macOS CoreGraphics listen-only event tap and a Windows low-level keyboard hook. Both record only a timestamp and do not inspect key values or typed text.
+- Added the native `typing_activity_recent` command, which exposes only a recent-activity boolean. The frontend polls it and triggers the existing rate-limited animation.
+- Added a Windows-only `windows-sys` dependency.
+- Commits: Rust hook `8032bd2faddac073e83495bbe0e8b243531acea1`; callback hardening `be0a8bdc80b3f7e94c15c50cc7d837f3e5c9a874`; Cargo dependency `21788c9bd49b6691fdaab37f6f888132297725e6`; frontend poll `dbefdc48f575351acc8e5401aabad70cedcfb7e2`.
+- macOS may require enabling DesktopPet under System Settings > Privacy & Security > Input Monitoring and restarting the app.
+- Build/runtime verification remains pending on macOS and Windows. Cargo may update `src-tauri/Cargo.lock` during the first build.
