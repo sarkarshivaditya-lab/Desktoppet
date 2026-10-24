@@ -19,7 +19,7 @@ Do not collapse multiple symptoms into one issue unless there is evidence they s
 | ID | Summary | Status | First recorded |
 |---|---|---|---|
 | BUG-001 | Pet disappears after some runtime, then reappears at launch position | Investigating | 2026-10-24 |
-| BUG-002 | Typing reaction does not work in any application | Fix implemented — awaiting platform build/runtime verification | 2026-10-24 |
+| BUG-002 | Typing reaction does not work in any application | macOS verified by user; Windows verification pending | 2026-10-24 |
 
 ---
 
@@ -168,3 +168,16 @@ Implemented a replacement without `rdev`:
 5. If either native build fails, capture the complete Rust compiler error and fix it before treating this as complete.
 
 **Important:** This is an implementation, not a verified fix. The editing agent has not run Cargo or the application on either operating system. The Windows dependency will be resolved into `src-tauri/Cargo.lock` during the first Cargo build; commit any resulting lockfile change if required by the repository's lockfile policy.
+
+
+### User runtime verification — macOS (2026-10-24)
+
+**Status:** macOS behavior verified by user; Windows remains pending.
+
+The user reports that the implementation works as intended and that all tested interactions work. Specifically:
+- Global typing activity triggers the dog's reaction while typing in other applications, without clicking or focusing DesktopPet first.
+- The user reports that the other existing interactions also work.
+
+This confirms the observed behavior on the user's Mac. It does not establish Windows support, long-duration roaming stability, or behavior across every macOS configuration. No independent build was run by the editing agent.
+
+**Next verification:** build and run on Windows; test global typing reactions and regression behaviors there. Continue long-duration roaming observation separately for BUG-001.
