@@ -113,3 +113,16 @@ The dog does not react while the user types in other applications. The prior `wi
 Not run by the editing agent. Test separately on macOS and Windows: run `npm run build` and `npm run tauri -- dev`; grant permission if requested; type in an unrelated editor/browser/terminal and confirm the dog reacts without focusing itself; confirm no typed content is logged; test behavior when permission is denied; then re-test petting, drag, nap, roaming, and idle animations. Cargo may update `src-tauri/Cargo.lock` when resolving the new dependency; commit that generated update after a successful build.
 
 **Verification status:** Not compiled or runtime-tested by the editing agent. Do not mark verified until tested on both platforms.
+
+
+### Crash evidence and hotfix — 2026-10-24
+
+The user supplied a macOS crash report for process `desktoppet` (macOS 27.0.1, Apple Silicon). Exception: `EXC_BREAKPOINT (SIGTRAP)`. The triggered thread stack includes `rdev::macos::keyboard::string_from_code`, `create_string_for_key`, `rdev::macos::common::convert`, and `rdev::macos::listen::raw_callback`, consistent with the new `rdev` global listener crashing while translating a key event. This is strong evidence implicating the dependency path, though the exact upstream defect is not independently reproduced.
+
+**Hotfix:** temporarily removed `rdev` and `start_typing_monitor`; the dog only reacts to key events delivered to its own window again. This intentionally sacrifices global typing reactions to prevent repeat crashes until a safer native implementation is tested.
+
+- `src-tauri/src/lib.rs`: removed `rdev` callback/command; commit [3df9f4c](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/3df9f4c802574bee0640f9dee4389b79104af438)
+- `src-tauri/Cargo.toml`: removed `rdev` dependency; commit [6e71344](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/6e713445216f71a20f431d5d1120af62fe296ee4)
+- `src/main.ts`: reverted to window-scoped typing events; commit [6f0e7b0](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/6f0e7b0267149eae325676d30c3ade5590c3cdba)
+
+**Verification:** not yet built or run after the hotfix. Test startup and type in another application; global reaction is expected to be disabled. Later replacement should use a platform-native activity signal that does not translate key codes to strings, with platform-specific testing.
