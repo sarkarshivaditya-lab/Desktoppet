@@ -19,6 +19,7 @@ Do not collapse multiple symptoms into one issue unless there is evidence they s
 | ID | Summary | Status | First recorded |
 |---|---|---|---|
 | BUG-001 | Pet disappears after some runtime, then reappears at launch position | Investigating | 2026-10-24 |
+| BUG-002 | Typing reaction does not work in other applications | Fix implemented — awaiting verification | 2026-10-24 |
 
 ---
 
@@ -76,3 +77,39 @@ Run on the operating system where the issue was observed, then on the other supp
 
 **Regression checks:** manual drag still works; click still pets; nap still pauses roaming; resizing does not break the bounds check; multiple monitors / mixed display scale factors are tested; global cursor gaze remains functional on macOS.
 
+
+
+---
+
+## BUG-002 — Typing reaction does not work in other applications
+
+**Status:** Fix implemented — awaiting build/runtime verification  
+**Reported:** 2026-10-24  
+**Platforms:** macOS and Windows intended; verification pending
+
+### Report and audit
+
+The dog does not react while the user types in other applications. The prior `window.addEventListener("keydown", ...)` listener only received events while the pet webview was focused. The animation already existed; global activity sensing was missing.
+
+### Fix attempt
+
+- Added `rdev = "0.5"` to `src-tauri/Cargo.toml`.
+- Added a native Tauri command in `src-tauri/src/lib.rs` that emits a generic `typing-activity` event on key-down activity. It discards key identity and does not send, log, store, or persist key values or text. Events are rate-limited.
+- Updated `src/main.ts` to subscribe to the generic event and trigger the existing animation. Browser preview still reacts only when focused.
+- OS input-monitoring/accessibility permissions may be required. Permission-denied behavior must be tested.
+
+### Files changed
+
+| File | Change | Commit |
+|---|---|---|
+| `src-tauri/Cargo.toml` | Add native input-event dependency | [81dbb70](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/81dbb706af23de8f2e8a0fe575df30e6f535f681) |
+| `src-tauri/src/lib.rs` | Add generic activity event command | [53885e5](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/53885e5b285a21fa741ed6bd4cab13bc725a2907) |
+| `src/main.ts` | Subscribe to activity event and trigger animation | [e9f56e3](https://github.com/sarkarshivaditya-lab/Desktoppet/commit/e9f56e3902dd39b0e55fb6cc4cf52e7d21c80fe3) |
+| `README.md` | Document feature and permissions | Pending commit |
+| `checkpoint.md` | Record implementation and verification plan | Pending commit |
+
+### Verification plan
+
+Not run by the editing agent. Test separately on macOS and Windows: run `npm run build` and `npm run tauri -- dev`; grant permission if requested; type in an unrelated editor/browser/terminal and confirm the dog reacts without focusing itself; confirm no typed content is logged; test behavior when permission is denied; then re-test petting, drag, nap, roaming, and idle animations. Cargo may update `src-tauri/Cargo.lock` when resolving the new dependency; commit that generated update after a successful build.
+
+**Verification status:** Not compiled or runtime-tested by the editing agent. Do not mark verified until tested on both platforms.
