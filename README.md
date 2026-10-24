@@ -163,6 +163,10 @@ Build and test on the target operating system. A macOS build does not produce a 
 - TypeScript and [Vite](https://vite.dev/) for the frontend.
 - Original German Shepherd SVG artwork and CSS animation.
 
+## Bug tracking
+
+Reported issues, source audits, file-level fixes, and verification status are recorded in the [Bug & Regression Tracking Log](BUG_TRACKER.md). Please update this log when investigating a bug or changing files to fix one.
+
 ## Contributing
 
 This is a passion project, and thoughtful bug reports, testing on different machines, and focused pull requests are welcome. Please include your operating system, version, steps to reproduce, and relevant terminal output when reporting a problem. Avoid submitting secrets, personal data, or unrelated changes.
