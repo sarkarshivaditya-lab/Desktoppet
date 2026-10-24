@@ -158,3 +158,12 @@ Not run by the editing agent: `npm run build`, `npm run tauri -- dev`, Rust buil
 
 
 - README follow-up: clarified that macOS users should drag the app bundle from the generated DMG into Applications when the disk image contains one. This is a documentation-only correction; app verification is still pending.
+
+
+## Bug investigation — BUG-001 disappearing/resetting pet (2026-10-24)
+
+- Created `BUG_TRACKER.md` before making source changes, so the user-reported symptom and intended audit trail exist independently of the patch.
+- Audited the roaming loop in `src/main.ts`. It was asynchronous and lacked a single-flight lifecycle guard; movement-frame errors were caught locally, but scheduling relied on reaching the end of `roam()`, and stale animation frames were not invalidated explicitly on interaction/unload.
+- Implemented a more defensive roam lifecycle in commit `78239b654b64a74a23f5898c2d2a2f4137dd3a4b`: single-flight guard, generation token, interaction cancellation, guaranteed rescheduling through `finally`, and monitor/bounds checks with diagnostic messages.
+- This is a plausible source-level hardening, not a confirmed root cause. The report's return-to-launch-position symptom may also indicate native window/webview recreation or OS-level behavior; no crash logs or reproduction sequence have been supplied.
+- Updated `BUG_TRACKER.md` with the exact file, commit, hypothesis, and runtime regression plan. No build/runtime test has been run by the editing agent.
