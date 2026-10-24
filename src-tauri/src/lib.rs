@@ -1,5 +1,3 @@
-use tauri::Emitter;
-
 #[cfg(target_os = "macos")]
 #[link(name = "ApplicationServices", kind = "framework")]
 extern "C" {
