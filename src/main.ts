@@ -1,6 +1,7 @@
 import "./style.css";
 import { availableMonitors, getCurrentWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { PhysicalPosition } from "@tauri-apps/api/dpi";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -214,11 +215,24 @@ if ("__TAURI_INTERNALS__" in window && navigator.userAgent.includes("Mac")) {
   window.addEventListener("beforeunload", () => window.clearInterval(cursorTimer));
 }
 
-// React to key activity delivered to this app window; never read or retain typed text.
-window.addEventListener("keydown", (event) => {
-  if (event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
-  reactToTyping();
-});
+// React to typing in any application using a native activity-only signal.
+// The native listener discards key identity and emits no key values or text.
+if ("__TAURI_INTERNALS__" in window) {
+  void (async () => {
+    try {
+      await listen("typing-activity", () => reactToTyping());
+      await invoke("start_typing_monitor");
+    } catch (error) {
+      console.warn("Global typing reaction unavailable. Check OS input-monitoring permissions.", error);
+    }
+  })();
+} else {
+  // Browser preview fallback: this only sees keys typed while this page is focused.
+  window.addEventListener("keydown", (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
+    reactToTyping();
+  });
+}
 
 function scheduleBlink() {
   window.setTimeout(() => {
