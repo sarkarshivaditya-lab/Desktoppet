@@ -13,11 +13,11 @@ A little German Shepherd that lives on your desktop. **DesktopPet is a passion p
 - Tail and limb animation, plus a gentle idle state.
 - Click to pet, and drag the dog to reposition it.
 - Gentle roaming around the current monitor.
-- System-wide typing-activity reactions on macOS and Windows (native implementation; testing pending).
+- System-wide typing-activity reactions on macOS (verified by user); Windows implementation is awaiting platform testing.
 - Resizable native window.
 - On macOS, native cursor tracking lets the eyes follow the pointer while another app is focused.
 
-**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. System-wide typing activity now uses platform-native activity signals on macOS and Windows. These signals record only that recent typing activity occurred; they do not read or store the typed content. macOS may require Input Monitoring permission in System Settings > Privacy & Security. The new implementation is awaiting build and runtime testing on both platforms. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
+**Current limitations:** this is an active prototype, not a polished release. Global cursor tracking is currently implemented for macOS; Windows falls back to pointer movement delivered to the pet window. System-wide typing activity uses platform-native activity signals on macOS and Windows. The macOS implementation has been tested successfully by the user: typing in other apps triggers the dog without focusing DesktopPet, and the other core interactions also work. Windows remains unverified. These signals record only that recent typing activity occurred; they do not read or store typed content. macOS may require Input Monitoring permission in System Settings > Privacy & Security. Perching on other application windows is not implemented yet. The project has not been verified on every macOS/Windows configuration.
 
 ## Download and install
 
@@ -172,4 +172,4 @@ Before making changes, read [AGENTS.md](AGENTS.md), the project [checkpoint](che
 
 ## Project status
 
-DesktopPet is still under active development. Native drag, roaming, global cursor tracking, animation, packaging, and accessibility behavior need real-world testing on supported systems. Please treat the README's commands as build instructions, not as a claim that every platform has already been validated.
+DesktopPet is still under active development. The user has confirmed that global typing reactions and the existing core interactions work on their Mac, including typing in other apps without focusing the pet. Windows behavior, long-duration roaming, packaging, and other hardware/display configurations still need separate validation. Please treat the README's commands as build instructions, not as a claim that every platform has been validated.
