@@ -26,7 +26,10 @@ mod global_typing_macos {
     use super::record_typing_activity;
     use std::ffi::c_void;
     use std::ptr;
+    use std::sync::atomic::{AtomicPtr, Ordering};
     use std::thread;
+
+    static EVENT_TAP: AtomicPtr<c_void> = AtomicPtr::new(ptr::null_mut());
 
     type CGEventRef = *mut c_void;
     type CGEventTapProxy = *mut c_void;
@@ -91,8 +94,10 @@ mod global_typing_macos {
         } else if event_type == K_CG_EVENT_TAP_DISABLED_BY_TIMEOUT
             || event_type == K_CG_EVENT_TAP_DISABLED_BY_USER_INPUT
         {
-            // Re-enable the listen-only tap if CoreGraphics temporarily disables it.
-            // The callback does not consume or modify the original event.
+            let tap = EVENT_TAP.load(Ordering::Relaxed);
+            if !tap.is_null() {
+                CGEventTapEnable(tap, true);
+            }
         }
         _event
     }
@@ -115,6 +120,7 @@ mod global_typing_macos {
                 return;
             }
 
+            EVENT_TAP.store(tap, Ordering::Relaxed);
             let source = CFMachPortCreateRunLoopSource(ptr::null(), tap, 0);
             if source.is_null() {
                 eprintln!("DesktopPet: could not create the global typing monitor run-loop source.");
@@ -138,7 +144,7 @@ mod global_typing_windows {
     use windows_sys::Win32::System::LibraryLoader::GetModuleHandleW;
     use windows_sys::Win32::UI::WindowsAndMessaging::{
         CallNextHookEx, DispatchMessageW, GetMessageW, SetWindowsHookExW, TranslateMessage,
-        UnhookWindowsHookEx, HHOOK, KBDLLHOOKSTRUCT, MSG, WH_KEYBOARD_LL, WM_KEYDOWN,
+        UnhookWindowsHookEx, HHOOK, MSG, WH_KEYBOARD_LL, WM_KEYDOWN,
         WM_SYSKEYDOWN,
     };
 
