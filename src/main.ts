@@ -215,11 +215,12 @@ if ("__TAURI_INTERNALS__" in window && navigator.userAgent.includes("Mac")) {
 }
 
 // Safe fallback: react only to keyboard activity delivered to the pet window.
-// Global monitoring is temporarily disabled after a native macOS crash in rdev.
-window.addEventListener("keydown", (event) => {
-  if (event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
+// Capture at the document level so bubbled key events are handled even when a
+// child element is the focused target. This does not enable global monitoring.
+document.addEventListener("keydown", (event) => {
+  if (event.isComposing || event.metaKey || event.ctrlKey || event.altKey || event.key.length !== 1) return;
   reactToTyping();
-});
+}, true);
 
 function scheduleBlink() {
   window.setTimeout(() => {
