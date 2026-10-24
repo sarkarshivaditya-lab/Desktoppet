@@ -19,7 +19,7 @@ Do not collapse multiple symptoms into one issue unless there is evidence they s
 | ID | Summary | Status | First recorded |
 |---|---|---|---|
 | BUG-001 | Pet disappears after some runtime, then reappears at launch position | Investigating | 2026-10-24 |
-| BUG-002 | Typing reaction does not work in any application | Reopened — focused-window reaction investigating | 2026-10-24 |
+| BUG-002 | Typing reaction does not work in any application | Fix implemented — awaiting platform build/runtime verification | 2026-10-24 |
 
 ---
 
@@ -133,3 +133,38 @@ The user supplied a macOS crash report for process `desktoppet` (macOS 27.0.1, A
 The user reports no reaction even when typing with DesktopPet focused. BUG-002 is reopened; this exceeds the expected limitation that global typing is disabled. Updated `src/main.ts` to use a capture-phase `document` keydown listener and ignore IME composition events. Removed the now-unused `tauri::Emitter` import from `src-tauri/src/lib.rs`. This is a defensive source-level adjustment, not a confirmed root-cause fix. Runtime verification remains pending.
 
 **Test:** run `npm run build`, then `npm run tauri -- dev`; click the pet window once and type ordinary letters while DesktopPet is focused. If it still does not react, capture the DevTools console and verify whether the webview receives focus. Global typing remains disabled until a safer native implementation is available.
+
+
+### Native activity-only replacement implementation — 2026-10-24
+
+**Status:** Source implementation committed; awaiting build/runtime verification on macOS and Windows.
+
+The user confirmed the local typing reaction works, but typing in other applications does not. This isolates the remaining issue to system-wide activity detection rather than the animation.
+
+Implemented a replacement without `rdev`:
+
+- macOS uses a listen-only CoreGraphics event tap subscribed only to key-down event types. The callback does not inspect event fields or convert key codes to strings. It records only a timestamp indicating that keyboard activity occurred.
+- Windows uses a low-level Windows keyboard hook and checks only whether the event is a key-down message. It does not read the keyboard hook's key data.
+- The frontend polls a native command that returns only whether recent keyboard activity occurred, then invokes the existing rate-limited animation.
+- The previous focused-window listener remains as a fallback for browser preview and local input.
+- No key values, typed text, or per-key records are emitted, logged, stored, or persisted by this implementation.
+- macOS may require granting DesktopPet Input Monitoring permission in System Settings > Privacy & Security > Input Monitoring. If the CoreGraphics event tap cannot be created, the native code logs a concise diagnostic and the global reaction will not work.
+- Windows hook installation failures are logged. The hook is process-wide and uses no key text.
+
+**Files changed in this pass:**
+
+| File | Change | Commit |
+|---|---|---|
+| `src-tauri/src/lib.rs` | Add macOS listen-only CoreGraphics event tap, Windows low-level hook, and timestamp-only command | `8032bd2faddac073e83495bbe0e8b243531acea1`; callback hardening `be0a8bdc80b3f7e94c15c50cc7d837f3e5c9a874` |
+| `src-tauri/Cargo.toml` | Add Windows-only `windows-sys` dependency and required API features | `21788c9bd49b6691fdaab37f6f888132297725e6` |
+| `src/main.ts` | Poll timestamp-only native command and trigger the existing typing animation | `dbefdc48f575351acc8e5401aabad70cedcfb7e2` |
+
+**Verification plan:**
+
+1. On macOS, run `npm install`, `npm run build`, then `npm run tauri -- dev`. If global activity is unavailable, add the running DesktopPet app to Input Monitoring under System Settings > Privacy & Security, fully quit and reopen it, then test typing in Terminal, VS Code, and a browser.
+2. On Windows, run the same build/dev commands and test typing in an unrelated app.
+3. Verify that the dog reacts while typing elsewhere, remains responsive to clicking/dragging/nap/roaming, and does not crash.
+4. Review console/terminal output and confirm no key values or text appear.
+5. If either native build fails, capture the complete Rust compiler error and fix it before treating this as complete.
+
+**Important:** This is an implementation, not a verified fix. The editing agent has not run Cargo or the application on either operating system. The Windows dependency will be resolved into `src-tauri/Cargo.lock` during the first Cargo build; commit any resulting lockfile change if required by the repository's lockfile policy.
